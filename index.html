@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0d0e0f"
+  >
+
+  <title>
+    Shepherd's Cache
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="collection.css"
+  >
+
+</head>
+
+
+<body>
+
+  <main id="page-shell">
+
+
+    <!-- ===============================================
+         TOP BRAND
+         =============================================== -->
+
+    <header id="site-header">
+
+      <div class="site-eyebrow">
+        THE PATCHWORK PASTURE
+      </div>
+
+      <h1>
+        SHEPHERD'S CACHE
+      </h1>
+
+      <p>
+        A record of what the flock has discovered.
+      </p>
+
+    </header>
+
+
+
+    <!-- ===============================================
+         USERNAME SEARCH
+         =============================================== -->
+
+    <section id="viewer-search">
+
+      <form id="viewer-search-form">
+
+        <label for="viewer-search-input">
+          TWITCH VIEWER
+        </label>
+
+        <div class="viewer-search-row">
+
+          <input
+            id="viewer-search-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter Twitch username"
+          >
+
+          <button
+            type="submit"
+          >
+            OPEN CACHE
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+
+
+    <!-- ===============================================
+         STATUS
+         =============================================== -->
+
+    <section
+      id="page-status"
+      aria-live="polite"
+    >
+    </section>
+
+
+
+    <!-- ===============================================
+         COLLECTION BOOK
+         =============================================== -->
+
+    <section
+      id="collection-book"
+      hidden
+    >
+
+      <div id="collection-book-panel">
+
+
+        <!-- HEADER -->
+
+        <header id="collection-book-header">
+
+          <div>
+
+            <div class="book-eyebrow">
+              THE FLOCK'S RECORD
+            </div>
+
+            <h2>
+              SHEPHERD'S CACHE
+            </h2>
+
+            <div id="collection-book-viewer">
+              @viewer
+            </div>
+
+          </div>
+
+
+          <div id="collection-total-pulls">
+
+            <span class="stat-label">
+              TOTAL PULLS
+            </span>
+
+            <span
+              id="total-pulls-value"
+              class="stat-value"
+            >
+              0
+            </span>
+
+          </div>
+
+        </header>
+
+
+
+        <!-- PROGRESS -->
+
+        <section id="book-progress-area">
+
+          <div id="book-progress-top">
+
+            <span>
+              COLLECTION PROGRESS
+            </span>
+
+            <span id="book-progress-count">
+              0 / 22
+            </span>
+
+          </div>
+
+
+          <div id="book-progress-track">
+
+            <div id="book-progress-fill">
+            </div>
+
+          </div>
+
+
+          <div id="book-progress-message">
+            THE FLOCK IS STILL GATHERING
+          </div>
+
+        </section>
+
+
+
+        <!-- RARITY SECTIONS -->
+
+        <section id="collection-sections">
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer id="collection-book-footer">
+
+          <span>
+            SHEPHERD'S CACHE
+          </span>
+
+          <span id="collection-last-updated">
+            UPDATED —
+          </span>
+
+        </footer>
+
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <script src="config.js"></script>
+
+  <script src="collection.js"></script>
+
+</body>
+
+</html>
