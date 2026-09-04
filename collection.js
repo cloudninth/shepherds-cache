@@ -1,29 +1,51 @@
 /* =====================================================
    STRAY
    SHEPHERD'S CACHE
+
    PUBLIC COLLECTION BOOK
-   Supabase + Filters + Share Link + Summary
+
+   Supabase
+   + Collection Filters
+   + Share Link
+   + Collection Summary
+   + Permanent 22/22 Completion Treatment
    ===================================================== */
 
 "use strict";
 
-/* =========================
+
+/* =====================================================
    CONFIG
-   ========================= */
+   ===================================================== */
 
-const CONFIG = window.ShepherdCacheConfig || {};
+const CONFIG =
+  window.ShepherdCacheConfig || {};
 
-const SUPABASE_URL = String(
-  CONFIG.supabaseUrl || ""
-)
-  .trim()
-  .replace(/\/+$/, "");
 
-const SUPABASE_PUBLISHABLE_KEY = String(
-  CONFIG.supabasePublishableKey || ""
-).trim();
+const SUPABASE_URL =
+  String(
+    CONFIG.supabaseUrl || ""
+  )
+    .trim()
+    .replace(
+      /\/+$/,
+      ""
+    );
 
-const TOTAL_ITEMS = 22;
+
+const SUPABASE_PUBLISHABLE_KEY =
+  String(
+    CONFIG.supabasePublishableKey || ""
+  ).trim();
+
+
+const TOTAL_ITEMS =
+  22;
+
+
+/* =====================================================
+   RARITY DATA
+   ===================================================== */
 
 const RARITY_ORDER = [
   "common",
@@ -31,6 +53,7 @@ const RARITY_ORDER = [
   "rare",
   "legendary"
 ];
+
 
 const RARITY_NAMES = {
   common: "COMMON",
@@ -40,9 +63,9 @@ const RARITY_NAMES = {
 };
 
 
-/* =========================
+/* =====================================================
    COLLECTIBLES
-   ========================= */
+   ===================================================== */
 
 const COLLECTIBLES = [
 
@@ -213,59 +236,69 @@ const COLLECTIBLES = [
 ];
 
 
-/* =========================
+/* =====================================================
    ELEMENTS
-   ========================= */
+   ===================================================== */
 
 const searchForm =
   document.getElementById(
     "viewer-search-form"
   );
 
+
 const searchInput =
   document.getElementById(
     "viewer-search-input"
   );
+
 
 const statusElement =
   document.getElementById(
     "page-status"
   );
 
+
 const collectionBook =
   document.getElementById(
     "collection-book"
   );
+
 
 const viewerElement =
   document.getElementById(
     "collection-book-viewer"
   );
 
+
 const totalPullsElement =
   document.getElementById(
     "total-pulls-value"
   );
+
 
 const progressCountElement =
   document.getElementById(
     "book-progress-count"
   );
 
+
 const progressFillElement =
   document.getElementById(
     "book-progress-fill"
   );
+
 
 const progressMessageElement =
   document.getElementById(
     "book-progress-message"
   );
 
+
 const sectionsElement =
   document.getElementById(
     "collection-sections"
   );
+
 
 const lastUpdatedElement =
   document.getElementById(
@@ -273,26 +306,41 @@ const lastUpdatedElement =
   );
 
 
-/* =========================
+/* =====================================================
    STATE
-   ========================= */
+   ===================================================== */
 
-let currentCollection = null;
-
-let currentStatusFilter = "all";
-
-let currentRarityFilter = "all";
-
-let filterToolbar = null;
-
-let collectionSummary = null;
-
-let shareButton = null;
+let currentCollection =
+  null;
 
 
-/* =========================
+let currentStatusFilter =
+  "all";
+
+
+let currentRarityFilter =
+  "all";
+
+
+let filterToolbar =
+  null;
+
+
+let collectionSummary =
+  null;
+
+
+let shareButton =
+  null;
+
+
+let completionBanner =
+  null;
+
+
+/* =====================================================
    HELPERS
-   ========================= */
+   ===================================================== */
 
 function normalizeUsername(
   username
@@ -315,8 +363,14 @@ function setStatus(
   type = ""
 ) {
 
+  if (!statusElement) {
+    return;
+  }
+
+
   statusElement.textContent =
     message || "";
+
 
   statusElement.className =
     type
@@ -334,19 +388,21 @@ function setPageUsername(
       username
     );
 
+
   const url =
     new URL(
       window.location.href
     );
 
 
-  if (cleanUsername) {
+  if (
+    cleanUsername
+  ) {
 
     url.searchParams.set(
       "user",
       cleanUsername
     );
-
   }
 
   else {
@@ -386,7 +442,8 @@ function getItemsObject(
 ) {
 
   if (
-    !collection ||
+    !collection
+    ||
     collection.items == null
   ) {
 
@@ -417,7 +474,8 @@ function getItemsObject(
 
 
       if (
-        parsed &&
+        parsed
+        &&
         typeof parsed ===
         "object"
       ) {
@@ -456,7 +514,8 @@ function getOwnedCount(
   if (
     !Number.isFinite(
       value
-    ) ||
+    )
+    ||
     value < 0
   ) {
 
@@ -474,26 +533,28 @@ function getUniqueCountFromItems(
   collection
 ) {
 
-  return COLLECTIBLES.reduce(
-    (
-      count,
-      item
-    ) => {
+  let count =
+    0;
 
-      return (
-        count +
-        (
-          getOwnedCount(
-            collection,
-            item.id
-          ) > 0
-            ? 1
-            : 0
-        )
-      );
-    },
-    0
-  );
+
+  for (
+    const collectible
+    of COLLECTIBLES
+  ) {
+
+    if (
+      getOwnedCount(
+        collection,
+        collectible.id
+      ) > 0
+    ) {
+
+      count++;
+    }
+  }
+
+
+  return count;
 }
 
 
@@ -503,7 +564,8 @@ function getSafeUniqueCount(
 
   const rpcCount =
     Number(
-      collection &&
+      collection
+      &&
       collection.unique_count != null
 
         ? collection.unique_count
@@ -549,7 +611,8 @@ function getSafeTotalPulls(
 
   const value =
     Number(
-      collection &&
+      collection
+      &&
       collection.total_pulls != null
 
         ? collection.total_pulls
@@ -597,11 +660,39 @@ function getDuplicatePulls(
 }
 
 
+function isCollectionComplete(
+  collection
+) {
+
+  if (
+    !collection
+  ) {
+
+    return false;
+  }
+
+
+  return (
+    collection.completed ===
+      true
+
+    ||
+
+    getSafeUniqueCount(
+      collection
+    ) >=
+      TOTAL_ITEMS
+  );
+}
+
+
 function formatUpdatedAt(
   rawValue
 ) {
 
-  if (!rawValue) {
+  if (
+    !rawValue
+  ) {
 
     return "UPDATED —";
   }
@@ -645,7 +736,9 @@ function getProgressMessage(
   completed
 ) {
 
-  if (completed) {
+  if (
+    completed
+  ) {
 
     return "THE FLOCK IS COMPLETE";
   }
@@ -687,12 +780,9 @@ function getProgressMessage(
 }
 
 
-/* =========================
-   EXTRA UI STYLES
-
-   This lets us add filters without
-   changing collection.css.
-   ========================= */
+/* =====================================================
+   ENHANCEMENT STYLES
+   ===================================================== */
 
 function injectEnhancementStyles() {
 
@@ -717,6 +807,10 @@ function injectEnhancementStyles() {
 
 
   style.textContent = `
+
+    /* ===============================================
+       COLLECTION TOOLS
+       =============================================== */
 
     #collection-tools {
 
@@ -822,6 +916,32 @@ function injectEnhancementStyles() {
     }
 
 
+    .cache-summary-chip.complete-chip {
+
+      border-color:
+        rgba(184, 140, 255, 0.62);
+
+      background:
+
+        linear-gradient(
+          135deg,
+          rgba(116, 101, 140, 0.34),
+          rgba(154, 116, 70, 0.18)
+        );
+
+      color:
+        #b88cff;
+
+      box-shadow:
+        0 0 16px
+        rgba(184, 140, 255, 0.11);
+    }
+
+
+    /* ===============================================
+       FILTERS
+       =============================================== */
+
     .collection-filter-group {
 
       display:
@@ -914,10 +1034,22 @@ function injectEnhancementStyles() {
         pointer;
 
       transition:
-        border-color 0.18s ease,
-        background 0.18s ease,
-        color 0.18s ease,
-        transform 0.18s ease;
+
+        border-color
+        0.18s
+        ease,
+
+        background
+        0.18s
+        ease,
+
+        color
+        0.18s
+        ease,
+
+        transform
+        0.18s
+        ease;
     }
 
 
@@ -1031,6 +1163,457 @@ function injectEnhancementStyles() {
     }
 
 
+    /* ===============================================
+       PERMANENT COMPLETION BANNER
+       =============================================== */
+
+    #cache-completion-banner {
+
+      position:
+        relative;
+
+      z-index:
+        4;
+
+      display:
+        none;
+
+      overflow:
+        hidden;
+
+      margin:
+        10px 0 15px;
+
+      padding:
+        21px 18px 18px;
+
+      border:
+        1px solid
+        rgba(184, 140, 255, 0.68);
+
+      border-radius:
+        14px;
+
+      background:
+
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(184, 140, 255, 0.19),
+          transparent 54%
+        ),
+
+        radial-gradient(
+          circle at 50% 100%,
+          rgba(154, 116, 70, 0.15),
+          transparent 62%
+        ),
+
+        linear-gradient(
+          145deg,
+          rgba(34, 30, 41, 0.97),
+          rgba(13, 14, 15, 0.98)
+        );
+
+      text-align:
+        center;
+
+      box-shadow:
+
+        0 0 28px
+        rgba(184, 140, 255, 0.12),
+
+        inset
+        0 0 30px
+        rgba(154, 116, 70, 0.06);
+    }
+
+
+    #collection-book.is-complete
+    #cache-completion-banner {
+
+      display:
+        block;
+
+      animation:
+        cacheCompletionBannerIn
+        0.65s
+        ease
+        both;
+    }
+
+
+    #cache-completion-banner::before {
+
+      content:
+        "";
+
+      position:
+        absolute;
+
+      inset:
+        7px;
+
+      border:
+        1px dashed
+        rgba(231, 221, 200, 0.13);
+
+      border-radius:
+        9px;
+
+      pointer-events:
+        none;
+    }
+
+
+    #cache-completion-seal {
+
+      width:
+        50px;
+
+      height:
+        50px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      margin:
+        0 auto 9px;
+
+      border:
+        1px solid
+        rgba(154, 116, 70, 0.8);
+
+      border-radius:
+        50%;
+
+      background:
+
+        radial-gradient(
+          circle,
+          rgba(184, 140, 255, 0.23),
+          rgba(13, 14, 15, 0.9)
+        );
+
+      color:
+        #e7ddc8;
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        23px;
+
+      font-weight:
+        800;
+
+      text-shadow:
+        0 0 12px
+        rgba(184, 140, 255, 0.7);
+
+      box-shadow:
+
+        0 0 19px
+        rgba(184, 140, 255, 0.16),
+
+        inset
+        0 0 12px
+        rgba(154, 116, 70, 0.12);
+    }
+
+
+    #cache-completion-kicker {
+
+      color:
+        var(
+          --stray-brass,
+          #9a7446
+        );
+
+      font-size:
+        9px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        3px;
+    }
+
+
+    #cache-completion-title {
+
+      margin-top:
+        5px;
+
+      color:
+        var(
+          --stray-cream,
+          #e7ddc8
+        );
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        23px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        1.2px;
+
+      text-shadow:
+
+        0 0 16px
+        rgba(184, 140, 255, 0.38),
+
+        0 3px 4px
+        rgba(0, 0, 0, 0.7);
+    }
+
+
+    #cache-completion-count {
+
+      margin-top:
+        6px;
+
+      color:
+        #b88cff;
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        18px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        3px;
+    }
+
+
+    #cache-completion-copy {
+
+      margin-top:
+        7px;
+
+      color:
+        var(
+          --stray-cream-muted,
+          #bfb49d
+        );
+
+      font-size:
+        10px;
+
+      font-weight:
+        600;
+
+      letter-spacing:
+        1px;
+    }
+
+
+    @keyframes cacheCompletionBannerIn {
+
+      from {
+
+        opacity:
+          0;
+
+        transform:
+          translateY(10px)
+          scale(0.98);
+      }
+
+      to {
+
+        opacity:
+          1;
+
+        transform:
+          translateY(0)
+          scale(1);
+      }
+    }
+
+
+    /* ===============================================
+       COMPLETED BOOK TREATMENT
+       =============================================== */
+
+    #collection-book.is-complete
+    #collection-book-panel {
+
+      border-color:
+        rgba(184, 140, 255, 0.66);
+
+      box-shadow:
+
+        0 24px 70px
+        rgba(0, 0, 0, 0.72),
+
+        0 0 36px
+        rgba(184, 140, 255, 0.12),
+
+        inset
+        0 0 50px
+        rgba(116, 101, 140, 0.07);
+    }
+
+
+    #collection-book.is-complete
+    #collection-book-viewer {
+
+      color:
+        #b88cff;
+
+      text-shadow:
+        0 0 10px
+        rgba(184, 140, 255, 0.25);
+    }
+
+
+    #collection-book.is-complete
+    #book-progress-count {
+
+      color:
+        #b88cff;
+
+      text-shadow:
+        0 0 10px
+        rgba(184, 140, 255, 0.28);
+    }
+
+
+    #collection-book.is-complete
+    #book-progress-fill {
+
+      background:
+
+        linear-gradient(
+          90deg,
+          var(
+            --stray-brass-dark,
+            #5d452d
+          ),
+          var(
+            --stray-brass,
+            #9a7446
+          ),
+          #b88cff,
+          #e7ddc8
+        );
+
+      background-size:
+        200% 100%;
+
+      animation:
+        completedProgressShimmer
+        3.8s
+        linear
+        infinite;
+    }
+
+
+    @keyframes completedProgressShimmer {
+
+      from {
+
+        background-position:
+          0% 50%;
+      }
+
+      to {
+
+        background-position:
+          200% 50%;
+      }
+    }
+
+
+    #collection-book.is-complete
+    #book-progress-message {
+
+      color:
+        #b88cff;
+
+      text-shadow:
+        0 0 14px
+        rgba(184, 140, 255, 0.42);
+    }
+
+
+    /* ===============================================
+       COMPLETED LEGENDARY CARDS
+       =============================================== */
+
+    #collection-book.is-complete
+    .collection-item.rarity-legendary.owned {
+
+      border-color:
+        rgba(184, 140, 255, 0.82);
+
+      box-shadow:
+
+        inset
+        0 0 30px
+        rgba(116, 101, 140, 0.17),
+
+        0 0 17px
+        rgba(184, 140, 255, 0.12);
+    }
+
+
+    #collection-book.is-complete
+    .collection-item.rarity-legendary.owned
+    img {
+
+      filter:
+
+        drop-shadow(
+          0 8px 9px
+          rgba(0, 0, 0, 0.58)
+        )
+
+        drop-shadow(
+          0 0 8px
+          rgba(184, 140, 255, 0.18)
+        );
+    }
+
+
+    #collection-book.is-complete
+    #collection-share-link {
+
+      border-color:
+        rgba(184, 140, 255, 0.52);
+
+      color:
+        #b88cff;
+
+      background:
+
+        linear-gradient(
+          135deg,
+          rgba(116, 101, 140, 0.28),
+          rgba(36, 36, 38, 0.8)
+        );
+    }
+
+
     @media (
       max-width: 620px
     ) {
@@ -1060,6 +1643,13 @@ function injectEnhancementStyles() {
         flex:
           1 1 auto;
       }
+
+
+      #cache-completion-title {
+
+        font-size:
+          19px;
+      }
     }
 
   `;
@@ -1071,9 +1661,111 @@ function injectEnhancementStyles() {
 }
 
 
-/* =========================
-   FILTER + SHARE TOOLBAR
-   ========================= */
+/* =====================================================
+   COMPLETION UI
+   ===================================================== */
+
+function ensureCompletionBanner() {
+
+  if (
+    completionBanner
+  ) {
+
+    return;
+  }
+
+
+  completionBanner =
+    document.createElement(
+      "section"
+    );
+
+
+  completionBanner.id =
+    "cache-completion-banner";
+
+
+  completionBanner.innerHTML = `
+
+    <div id="cache-completion-seal">
+      IX
+    </div>
+
+    <div id="cache-completion-kicker">
+      COMPLETE COLLECTION
+    </div>
+
+    <div id="cache-completion-title">
+      THE FLOCK IS COMPLETE
+    </div>
+
+    <div id="cache-completion-count">
+      22 / 22
+    </div>
+
+    <div id="cache-completion-copy">
+      Every relic of the Shepherd's Cache has been recovered.
+    </div>
+
+  `;
+
+
+  if (
+    filterToolbar
+  ) {
+
+    filterToolbar.parentNode.insertBefore(
+      completionBanner,
+      filterToolbar
+    );
+  }
+
+  else {
+
+    sectionsElement.parentNode.insertBefore(
+      completionBanner,
+      sectionsElement
+    );
+  }
+}
+
+
+function updateCompletionTreatment(
+  collection
+) {
+
+  ensureCompletionBanner();
+
+
+  const completed =
+    isCollectionComplete(
+      collection
+    );
+
+
+  collectionBook.classList.toggle(
+    "is-complete",
+    completed
+  );
+
+
+  if (
+    shareButton
+  ) {
+
+    shareButton.textContent =
+      completed
+
+        ? "COPY COMPLETED COLLECTION LINK"
+
+        : "COPY THIS COLLECTION LINK";
+  }
+}
+
+
+/* =====================================================
+   FILTER UI
+   ===================================================== */
 
 function makeFilterButton(
   label,
@@ -1129,6 +1821,7 @@ function makeFilterButton(
 
       updateFilterButtonStates();
 
+
       renderFilteredSections();
     }
   );
@@ -1176,9 +1869,7 @@ function ensureFilterToolbar() {
   );
 
 
-  /* -------------------------
-     SHOW FILTER
-     ------------------------- */
+  /* SHOW */
 
   const statusGroup =
     document.createElement(
@@ -1241,9 +1932,7 @@ function ensureFilterToolbar() {
   );
 
 
-  /* -------------------------
-     RARITY FILTER
-     ------------------------- */
+  /* RARITY */
 
   const rarityGroup =
     document.createElement(
@@ -1305,9 +1994,7 @@ function ensureFilterToolbar() {
   );
 
 
-  /* -------------------------
-     SHARE BUTTON
-     ------------------------- */
+  /* SHARE */
 
   shareButton =
     document.createElement(
@@ -1338,15 +2025,13 @@ function ensureFilterToolbar() {
   );
 
 
-  /*
-     Place toolbar directly before
-     collection rarity sections.
-  */
-
   sectionsElement.parentNode.insertBefore(
     filterToolbar,
     sectionsElement
   );
+
+
+  ensureCompletionBanner();
 
 
   updateFilterButtonStates();
@@ -1386,7 +2071,9 @@ function updateFilterButtonStates() {
       (
         type ===
         "status"
+
         &&
+
         value ===
         currentStatusFilter
       )
@@ -1396,7 +2083,9 @@ function updateFilterButtonStates() {
       (
         type ===
         "rarity"
+
         &&
+
         value ===
         currentRarityFilter
       );
@@ -1410,11 +2099,32 @@ function updateFilterButtonStates() {
 
     button.setAttribute(
       "aria-pressed",
+
       active
         ? "true"
         : "false"
     );
   }
+}
+
+
+/* =====================================================
+   SHARE LINK
+   ===================================================== */
+
+function getDefaultShareButtonText() {
+
+  return (
+    currentCollection
+    &&
+    isCollectionComplete(
+      currentCollection
+    )
+  )
+
+    ? "COPY COMPLETED COLLECTION LINK"
+
+    : "COPY THIS COLLECTION LINK";
 }
 
 
@@ -1427,10 +2137,6 @@ async function copyCollectionLink() {
   let copied =
     false;
 
-
-  /*
-     Normal modern browser method.
-  */
 
   if (
     navigator.clipboard
@@ -1454,11 +2160,9 @@ async function copyCollectionLink() {
   }
 
 
-  /*
-     Fallback method.
-  */
-
-  if (!copied) {
+  if (
+    !copied
+  ) {
 
     const textarea =
       document.createElement(
@@ -1521,7 +2225,9 @@ async function copyCollectionLink() {
 
   shareButton.textContent =
     copied
+
       ? "LINK COPIED"
+
       : "COPY FAILED";
 
 
@@ -1535,7 +2241,7 @@ async function copyCollectionLink() {
     function() {
 
       shareButton.textContent =
-        "COPY THIS COLLECTION LINK";
+        getDefaultShareButtonText();
 
 
       shareButton.classList.remove(
@@ -1548,15 +2254,17 @@ async function copyCollectionLink() {
 }
 
 
-/* =========================
+/* =====================================================
    SUPABASE
-   ========================= */
+   ===================================================== */
 
 async function fetchCollection(
   username
 ) {
 
-  if (!SUPABASE_URL) {
+  if (
+    !SUPABASE_URL
+  ) {
 
     throw new Error(
       "Supabase Project URL is missing from config.js."
@@ -1658,7 +2366,7 @@ async function fetchCollection(
       data
       &&
       typeof data ===
-      "object"
+        "object"
       &&
       data.message
     ) {
@@ -1694,7 +2402,7 @@ async function fetchCollection(
     data
     &&
     typeof data ===
-    "object"
+      "object"
   ) {
 
     return data;
@@ -1705,9 +2413,9 @@ async function fetchCollection(
 }
 
 
-/* =========================
+/* =====================================================
    COLLECTION CARDS
-   ========================= */
+   ===================================================== */
 
 function createCollectionItem(
   collectible,
@@ -1748,9 +2456,7 @@ function createCollectionItem(
     collectible.rarity;
 
 
-  /* -------------------------
-     IMAGE
-     ------------------------- */
+  /* IMAGE */
 
   const imageWrap =
     document.createElement(
@@ -1794,9 +2500,7 @@ function createCollectionItem(
   );
 
 
-  /* -------------------------
-     DUPLICATE COUNT
-     ------------------------- */
+  /* OWNED COUNT */
 
   if (
     ownedCount > 1
@@ -1824,11 +2528,11 @@ function createCollectionItem(
   }
 
 
-  /* -------------------------
-     MISSING MARK
-     ------------------------- */
+  /* MISSING MARK */
 
-  if (!owned) {
+  if (
+    !owned
+  ) {
 
     const missingMark =
       document.createElement(
@@ -1850,9 +2554,7 @@ function createCollectionItem(
   }
 
 
-  /* -------------------------
-     NAME
-     ------------------------- */
+  /* NAME */
 
   const nameElement =
     document.createElement(
@@ -1880,6 +2582,10 @@ function createCollectionItem(
   return itemElement;
 }
 
+
+/* =====================================================
+   FILTERING
+   ===================================================== */
 
 function collectibleMatchesStatus(
   collection,
@@ -1956,31 +2662,25 @@ function createRaritySection(
   }
 
 
-  const ownedUnique =
-    allRarityCollectibles.reduce(
-      (
-        count,
-        collectible
-      ) => {
+  let ownedUnique =
+    0;
 
-        return (
-          count
-          +
-          (
-            getOwnedCount(
-              collection,
-              collectible.id
-            ) > 0
 
-              ? 1
+  for (
+    const collectible
+    of allRarityCollectibles
+  ) {
 
-              : 0
-          )
-        );
-      },
+    if (
+      getOwnedCount(
+        collection,
+        collectible.id
+      ) > 0
+    ) {
 
-      0
-    );
+      ownedUnique++;
+    }
+  }
 
 
   const section =
@@ -1997,9 +2697,7 @@ function createRaritySection(
     rarity;
 
 
-  /* -------------------------
-     HEADER
-     ------------------------- */
+  /* HEADER */
 
   const sectionHeader =
     document.createElement(
@@ -2057,9 +2755,7 @@ function createRaritySection(
   );
 
 
-  /* -------------------------
-     GRID
-     ------------------------- */
+  /* GRID */
 
   const grid =
     document.createElement(
@@ -2102,9 +2798,9 @@ function createRaritySection(
 }
 
 
-/* =========================
+/* =====================================================
    SUMMARY
-   ========================= */
+   ===================================================== */
 
 function updateCollectionSummary(
   collection
@@ -2137,7 +2833,25 @@ function updateCollectionSummary(
     );
 
 
+  const completed =
+    isCollectionComplete(
+      collection
+    );
+
+
   collectionSummary.innerHTML = `
+
+    ${
+      completed
+
+        ? `
+          <span class="cache-summary-chip complete-chip">
+            <strong>✓</strong> COMPLETE COLLECTION
+          </span>
+        `
+
+        : ""
+    }
 
     <span class="cache-summary-chip">
       <strong>${uniqueCount}</strong> FOUND
@@ -2159,9 +2873,9 @@ function updateCollectionSummary(
 }
 
 
-/* =========================
-   FILTERED SECTIONS
-   ========================= */
+/* =====================================================
+   RENDER FILTERED SECTIONS
+   ===================================================== */
 
 function renderFilteredSections() {
 
@@ -2267,9 +2981,9 @@ function renderFilteredSections() {
 }
 
 
-/* =========================
+/* =====================================================
    FULL COLLECTION RENDER
-   ========================= */
+   ===================================================== */
 
 function renderCollection(
   collection
@@ -2322,18 +3036,12 @@ function renderCollection(
 
 
   const completed =
-    collection.completed ===
-      true
-
-    ||
-
-    uniqueCount >=
-      TOTAL_ITEMS;
+    isCollectionComplete(
+      collection
+    );
 
 
-  /* -------------------------
-     VIEWER NAME
-     ------------------------- */
+  /* VIEWER */
 
   viewerElement.textContent =
     "@"
@@ -2341,17 +3049,13 @@ function renderCollection(
     displayName;
 
 
-  /* -------------------------
-     TOTAL PULLS
-     ------------------------- */
+  /* TOTAL PULLS */
 
   totalPullsElement.textContent =
     totalPulls;
 
 
-  /* -------------------------
-     PROGRESS
-     ------------------------- */
+  /* PROGRESS */
 
   progressCountElement.textContent =
     uniqueCount
@@ -2388,21 +3092,26 @@ function renderCollection(
   );
 
 
-  /* -------------------------
-     SUMMARY + ITEMS
-     ------------------------- */
+  /* COMPLETION LOOK */
+
+  updateCompletionTreatment(
+    collection
+  );
+
+
+  /* SUMMARY */
 
   updateCollectionSummary(
     collection
   );
 
 
+  /* CARDS */
+
   renderFilteredSections();
 
 
-  /* -------------------------
-     FOOTER
-     ------------------------- */
+  /* UPDATED */
 
   lastUpdatedElement.textContent =
     formatUpdatedAt(
@@ -2410,36 +3119,36 @@ function renderCollection(
     );
 
 
-  /* -------------------------
-     SEARCH FIELD
-     ------------------------- */
+  /* SEARCH FIELD */
 
   searchInput.value =
     username;
 
 
-  /* -------------------------
-     PAGE TITLE
-     ------------------------- */
+  /* PAGE TITLE */
 
   document.title =
-    displayName
-    +
-    " · Shepherd's Cache";
+    completed
+
+      ? displayName
+        +
+        " · 22/22 · Shepherd's Cache"
+
+      : displayName
+        +
+        " · Shepherd's Cache";
 
 
-  /* -------------------------
-     SHOW COLLECTION
-     ------------------------- */
+  /* SHOW */
 
   collectionBook.hidden =
     false;
 }
 
 
-/* =========================
+/* =====================================================
    LOAD VIEWER
-   ========================= */
+   ===================================================== */
 
 async function loadViewer(
   username
@@ -2461,6 +3170,11 @@ async function loadViewer(
 
     collectionBook.hidden =
       true;
+
+
+    collectionBook.classList.remove(
+      "is-complete"
+    );
 
 
     document.title =
@@ -2492,6 +3206,11 @@ async function loadViewer(
 
   collectionBook.hidden =
     true;
+
+
+  collectionBook.classList.remove(
+    "is-complete"
+  );
 
 
   setStatus(
@@ -2564,6 +3283,11 @@ async function loadViewer(
       true;
 
 
+    collectionBook.classList.remove(
+      "is-complete"
+    );
+
+
     setStatus(
 
       error
@@ -2580,9 +3304,9 @@ async function loadViewer(
 }
 
 
-/* =========================
+/* =====================================================
    SEARCH
-   ========================= */
+   ===================================================== */
 
 searchForm.addEventListener(
   "submit",
@@ -2600,9 +3324,9 @@ searchForm.addEventListener(
 );
 
 
-/* =========================
+/* =====================================================
    START
-   ========================= */
+   ===================================================== */
 
 ensureFilterToolbar();
 
