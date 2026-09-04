@@ -1,23 +1,12 @@
 /* =====================================================
-   STRAY
-   SHEPHERD'S CACHE
-
-   COLLECTION ACHIEVEMENTS
-   + BOTTOM PANEL LAYOUT
-   + COLLAPSIBLE STATISTICS
-   + COLLAPSIBLE ACHIEVEMENTS
-
-   No Supabase changes.
-   No Streamer.bot changes.
-   No collection.js changes.
+   STRAY - SHEPHERD'S CACHE
+   SERIES I - COLLECTION ACHIEVEMENTS
+   + bottom placement
+   + collapsible statistics
+   + collapsible achievements
    ===================================================== */
 
 "use strict";
-
-
-/* =====================================================
-   ACHIEVEMENT DEFINITIONS
-   ===================================================== */
 
 const SHEPHERD_CACHE_ACHIEVEMENTS = [
 
@@ -33,15 +22,6 @@ const SHEPHERD_CACHE_ACHIEVEMENTS = [
   {
     id: "trail-begins",
     title: "THE TRAIL BEGINS",
-    description: "Discover 5 relics.",
-    symbol: "V",
-    type: "unique",
-    required: 5
-  },
-
-  {
-    id: "flock-gathers",
-    title: "THE FLOCK GATHERS",
     description: "Discover 10 relics.",
     symbol: "X",
     type: "unique",
@@ -49,17 +29,8 @@ const SHEPHERD_CACHE_ACHIEVEMENTS = [
   },
 
   {
-    id: "cache-remembers",
-    title: "THE CACHE REMEMBERS",
-    description: "Discover 15 relics.",
-    symbol: "XV",
-    type: "unique",
-    required: 15
-  },
-
-  {
-    id: "final-stretch",
-    title: "THE FINAL STRETCH",
+    id: "flock-gathers",
+    title: "THE FLOCK GATHERS",
     description: "Discover 20 relics.",
     symbol: "XX",
     type: "unique",
@@ -67,49 +38,67 @@ const SHEPHERD_CACHE_ACHIEVEMENTS = [
   },
 
   {
+    id: "cache-remembers",
+    title: "THE CACHE REMEMBERS",
+    description: "Discover 30 relics.",
+    symbol: "XXX",
+    type: "unique",
+    required: 30
+  },
+
+  {
+    id: "final-stretch",
+    title: "THE FINAL STRETCH",
+    description: "Discover 40 relics.",
+    symbol: "XL",
+    type: "unique",
+    required: 40
+  },
+
+  {
     id: "flock-complete",
     title: "THE FLOCK IS COMPLETE",
-    description: "Recover every relic in the Shepherd's Cache.",
-    symbol: "IX",
+    description: "Recover all 50 relics in Series I.",
+    symbol: "L",
     type: "unique",
-    required: 22,
+    required: 50,
     legendary: true
   },
 
   {
     id: "common-keeper",
     title: "COMMON KEEPER",
-    description: "Complete the Common collection.",
+    description: "Complete all 20 Common relics.",
     symbol: "C",
     type: "rarity",
     rarity: "common",
-    required: 5
+    required: 20
   },
 
   {
     id: "uncommon-keeper",
     title: "UNCOMMON KEEPER",
-    description: "Complete the Uncommon collection.",
+    description: "Complete all 15 Uncommon relics.",
     symbol: "U",
     type: "rarity",
     rarity: "uncommon",
-    required: 7
+    required: 15
   },
 
   {
     id: "rare-keeper",
     title: "RARE KEEPER",
-    description: "Complete the Rare collection.",
+    description: "Complete all 10 Rare relics.",
     symbol: "R",
     type: "rarity",
     rarity: "rare",
-    required: 5
+    required: 10
   },
 
   {
     id: "legendary-keeper",
     title: "LEGENDARY KEEPER",
-    description: "Complete the Legendary collection.",
+    description: "Complete all 5 Legendary relics.",
     symbol: "L",
     type: "rarity",
     rarity: "legendary",
@@ -120,17 +109,17 @@ const SHEPHERD_CACHE_ACHIEVEMENTS = [
 ];
 
 
-/* =====================================================
-   STATE
-   ===================================================== */
+let shepherdAchievementsPanel =
+  null;
 
-let shepherdAchievementsPanel = null;
+let shepherdAchievementsGrid =
+  null;
 
-let shepherdAchievementsGrid = null;
+let shepherdAchievementsSummary =
+  null;
 
-let shepherdAchievementsSummary = null;
-
-let shepherdAchievementRenderTimer = null;
+let shepherdAchievementRenderTimer =
+  null;
 
 
 /* =====================================================
@@ -144,6 +133,7 @@ function injectShepherdAchievementStyles() {
       "shepherd-cache-achievement-styles"
     )
   ) {
+
     return;
   }
 
@@ -159,10 +149,6 @@ function injectShepherdAchievementStyles() {
 
 
   style.textContent = `
-
-    /* ===============================================
-       BOTTOM PANEL SHARED STYLE
-       =============================================== */
 
     #collection-stats,
     #shepherd-achievements {
@@ -200,10 +186,6 @@ function injectShepherdAchievementStyles() {
         rgba(10, 11, 12, 0.46);
     }
 
-
-    /* ===============================================
-       COLLAPSIBLE HEADER
-       =============================================== */
 
     .cache-bottom-toggle {
 
@@ -247,12 +229,7 @@ function injectShepherdAchievementStyles() {
         left;
 
       transition:
-
         background
-        0.18s
-        ease,
-
-        border-color
         0.18s
         ease;
     }
@@ -422,9 +399,6 @@ function injectShepherdAchievementStyles() {
       line-height:
         1;
 
-      transform:
-        rotate(0deg);
-
       transition:
         transform
         0.22s
@@ -439,10 +413,6 @@ function injectShepherdAchievementStyles() {
         rotate(180deg);
     }
 
-
-    /* ===============================================
-       COLLAPSIBLE BODY
-       =============================================== */
 
     .cache-bottom-collapse-body {
 
@@ -462,10 +432,6 @@ function injectShepherdAchievementStyles() {
     }
 
 
-    /* ===============================================
-       COLLECTION STATISTICS FIXES
-       =============================================== */
-
     #collection-stats-title {
 
       display:
@@ -480,10 +446,6 @@ function injectShepherdAchievementStyles() {
         14px;
     }
 
-
-    /* ===============================================
-       ACHIEVEMENT GRID
-       =============================================== */
 
     #shepherd-achievements-grid {
 
@@ -503,10 +465,6 @@ function injectShepherdAchievementStyles() {
         14px;
     }
 
-
-    /* ===============================================
-       ACHIEVEMENT CARD
-       =============================================== */
 
     .shepherd-achievement {
 
@@ -606,10 +564,6 @@ function injectShepherdAchievementStyles() {
         grayscale(0.72);
     }
 
-
-    /* ===============================================
-       ACHIEVEMENT SEAL
-       =============================================== */
 
     .shepherd-achievement-seal {
 
@@ -713,10 +667,6 @@ function injectShepherdAchievementStyles() {
         rgba(184, 140, 255, 0.13);
     }
 
-
-    /* ===============================================
-       ACHIEVEMENT COPY
-       =============================================== */
 
     .shepherd-achievement-name {
 
@@ -827,10 +777,6 @@ function injectShepherdAchievementStyles() {
     }
 
 
-    /* ===============================================
-       COMPLETE COLLECTION
-       =============================================== */
-
     #collection-book.is-complete
     #shepherd-achievements {
 
@@ -842,10 +788,6 @@ function injectShepherdAchievementStyles() {
         rgba(184, 140, 255, 0.05);
     }
 
-
-    /* ===============================================
-       RESPONSIVE
-       =============================================== */
 
     @media (
       max-width: 900px
@@ -1045,7 +987,7 @@ function getAchievementRarityCount(
 
 
 /* =====================================================
-   ACHIEVEMENT STATE
+   STATE
    ===================================================== */
 
 function isAchievementUnlocked(
@@ -1093,7 +1035,7 @@ function isAchievementUnlocked(
 
 
 /* =====================================================
-   ACHIEVEMENT PROGRESS
+   PROGRESS
    ===================================================== */
 
 function getAchievementProgress(
@@ -1105,15 +1047,11 @@ function getAchievementProgress(
     "unique"
   ) {
 
-    const value =
+    return (
       Math.min(
         getAchievementUniqueCount(),
         achievement.required
-      );
-
-
-    return (
-      value
+      )
       +
       " / "
       +
@@ -1127,17 +1065,13 @@ function getAchievementProgress(
     "rarity"
   ) {
 
-    const value =
+    return (
       Math.min(
         getAchievementRarityCount(
           achievement.rarity
         ),
         achievement.required
-      );
-
-
-    return (
-      value
+      )
       +
       " / "
       +
@@ -1151,7 +1085,7 @@ function getAchievementProgress(
 
 
 /* =====================================================
-   ACHIEVEMENT CARD
+   CARD
    ===================================================== */
 
 function createAchievementCard(
@@ -1235,7 +1169,50 @@ function createAchievementCard(
 
 
 /* =====================================================
-   CREATE ACHIEVEMENTS PANEL
+   COLLAPSE
+   ===================================================== */
+
+function toggleCollapseSection(
+  toggle,
+  body
+) {
+
+  if (
+    !toggle
+    ||
+    !body
+  ) {
+
+    return;
+  }
+
+
+  const expanded =
+    toggle.getAttribute(
+      "aria-expanded"
+    ) ===
+    "true";
+
+
+  const newExpanded =
+    !expanded;
+
+
+  toggle.setAttribute(
+    "aria-expanded",
+    newExpanded
+      ? "true"
+      : "false"
+  );
+
+
+  body.hidden =
+    !newExpanded;
+}
+
+
+/* =====================================================
+   ACHIEVEMENTS PANEL
    ===================================================== */
 
 function createShepherdAchievementsPanel() {
@@ -1278,7 +1255,7 @@ function createShepherdAchievementsPanel() {
         </span>
 
         <span class="cache-bottom-toggle-subtitle">
-          Milestones earned across the Shepherd's Cache
+          Milestones earned across Shepherd's Cache Series I
         </span>
 
       </span>
@@ -1360,7 +1337,7 @@ function createShepherdAchievementsPanel() {
 
 
 /* =====================================================
-   MAKE STATISTICS COLLAPSIBLE
+   STATISTICS COLLAPSE
    ===================================================== */
 
 function prepareStatisticsCollapse() {
@@ -1373,15 +1350,9 @@ function prepareStatisticsCollapse() {
 
   if (
     !stats
-  ) {
-
-    return;
-  }
-
-
-  if (
+    ||
     stats.dataset.collapseReady ===
-    "true"
+      "true"
   ) {
 
     return;
@@ -1424,11 +1395,6 @@ function prepareStatisticsCollapse() {
   body.hidden =
     true;
 
-
-  /*
-     Move all current statistics content into
-     the collapsible body except the hidden title.
-  */
 
   const children =
     Array.from(
@@ -1507,7 +1473,7 @@ function prepareStatisticsCollapse() {
         class="cache-bottom-toggle-summary"
         id="collection-stats-toggle-summary"
       >
-        VIEW STATS
+        <strong>0</strong> / 50
       </span>
 
       <span
@@ -1547,7 +1513,7 @@ function prepareStatisticsCollapse() {
 
 
 /* =====================================================
-   UPDATE STATISTICS HEADER SUMMARY
+   STAT HEADER
    ===================================================== */
 
 function updateStatisticsToggleSummary() {
@@ -1566,64 +1532,17 @@ function updateStatisticsToggleSummary() {
   }
 
 
-  const unique =
-    getAchievementUniqueCount();
-
-
   summary.innerHTML =
     "<strong>"
     +
-    unique
+    getAchievementUniqueCount()
     +
-    "</strong> / 22";
+    "</strong> / 50";
 }
 
 
 /* =====================================================
-   COLLAPSE TOGGLE
-   ===================================================== */
-
-function toggleCollapseSection(
-  toggle,
-  body
-) {
-
-  if (
-    !toggle
-    ||
-    !body
-  ) {
-
-    return;
-  }
-
-
-  const expanded =
-    toggle.getAttribute(
-      "aria-expanded"
-    ) ===
-    "true";
-
-
-  const newExpanded =
-    !expanded;
-
-
-  toggle.setAttribute(
-    "aria-expanded",
-    newExpanded
-      ? "true"
-      : "false"
-  );
-
-
-  body.hidden =
-    !newExpanded;
-}
-
-
-/* =====================================================
-   MOVE BOTTOM PANELS
+   BOTTOM ORDER
    ===================================================== */
 
 function placeBottomPanels() {
@@ -1652,16 +1571,6 @@ function placeBottomPanels() {
     document.getElementById(
       "collection-stats"
     );
-
-
-  /*
-     Desired order:
-
-     collection-sections
-     collection-stats
-     shepherd-achievements
-     footer
-  */
 
 
   if (
@@ -1704,21 +1613,21 @@ function placeBottomPanels() {
 
 
 /* =====================================================
-   RENDER ACHIEVEMENTS
+   RENDER
    ===================================================== */
 
 function renderShepherdAchievements() {
 
-  const collectionBook =
+  const book =
     document.getElementById(
       "collection-book"
     );
 
 
   if (
-    !collectionBook
+    !book
     ||
-    collectionBook.hidden
+    book.hidden
   ) {
 
     if (
@@ -1793,7 +1702,7 @@ function renderShepherdAchievements() {
 
 
 /* =====================================================
-   QUEUED RENDER
+   QUEUE
    ===================================================== */
 
 function queueShepherdAchievementRender() {
@@ -1816,7 +1725,7 @@ function queueShepherdAchievementRender() {
 
 
 /* =====================================================
-   WATCH COLLECTION VISIBILITY
+   OBSERVERS
    ===================================================== */
 
 const shepherdAchievementBook =
@@ -1855,10 +1764,6 @@ if (
 }
 
 
-/* =====================================================
-   WATCH COLLECTIBLE RENDERING
-   ===================================================== */
-
 const shepherdAchievementSections =
   document.getElementById(
     "collection-sections"
@@ -1893,7 +1798,7 @@ if (
 
 
 /* =====================================================
-   SEARCH FORM
+   SEARCH
    ===================================================== */
 
 const shepherdAchievementSearch =

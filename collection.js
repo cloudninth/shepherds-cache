@@ -1,30 +1,18 @@
 /* =====================================================
    STRAY - SHEPHERD'S CACHE
    PUBLIC COLLECTION BOOK
+   SERIES I - 50 COLLECTIBLES
 
-   Supabase
-   + Filters
-   + Share Link
-   + Summary
-   + Permanent 22/22 Treatment
-   + Viewer Collection Statistics
+   Supabase RPC + filters + sharing + stats + completion
    ===================================================== */
 
 "use strict";
 
 const CONFIG = window.ShepherdCacheConfig || {};
+const SUPABASE_URL = String(CONFIG.supabaseUrl || "").trim().replace(/\/+$/, "");
+const SUPABASE_PUBLISHABLE_KEY = String(CONFIG.supabasePublishableKey || "").trim();
 
-const SUPABASE_URL = String(
-  CONFIG.supabaseUrl || ""
-)
-  .trim()
-  .replace(/\/+$/, "");
-
-const SUPABASE_PUBLISHABLE_KEY = String(
-  CONFIG.supabasePublishableKey || ""
-).trim();
-
-const TOTAL_ITEMS = 22;
+const TOTAL_ITEMS = 50;
 
 const RARITY_ORDER = [
   "common",
@@ -41,16 +29,11 @@ const RARITY_NAMES = {
 };
 
 const RARITY_TOTALS = {
-  common: 5,
-  uncommon: 7,
-  rare: 5,
+  common: 20,
+  uncommon: 15,
+  rare: 10,
   legendary: 5
 };
-
-
-/* =====================================================
-   COLLECTIBLES
-   ===================================================== */
 
 const COLLECTIBLES = [
 
@@ -89,6 +72,111 @@ const COLLECTIBLES = [
     name: "Old Pasture Token",
     rarity: "common",
     image: "assets/collectibles/old-pasture-token.png"
+  },
+
+  {
+    id: "shepherds-twine-bundle",
+    name: "Shepherd's Twine Bundle",
+    rarity: "common",
+    image: "assets/collectibles/shepherds-twine-bundle.png"
+  },
+
+  {
+    id: "bent-gate-hinge",
+    name: "Bent Gate Hinge",
+    rarity: "common",
+    image: "assets/collectibles/bent-gate-hinge.png"
+  },
+
+  {
+    id: "flock-chalk-stub",
+    name: "Flock Chalk Stub",
+    rarity: "common",
+    image: "assets/collectibles/flock-chalk-stub.png"
+  },
+
+  {
+    id: "worn-wool-comb",
+    name: "Worn Wool Comb",
+    rarity: "common",
+    image: "assets/collectibles/worn-wool-comb.png"
+  },
+
+  {
+    id: "weathered-tin-cup",
+    name: "Weathered Tin Cup",
+    rarity: "common",
+    image: "assets/collectibles/weathered-tin-cup.png"
+  },
+
+  {
+    id: "mended-work-glove",
+    name: "Mended Work Glove",
+    rarity: "common",
+    image: "assets/collectibles/mended-work-glove.png"
+  },
+
+  {
+    id: "field-needle-case",
+    name: "Field Needle Case",
+    rarity: "common",
+    image: "assets/collectibles/field-needle-case.png"
+  },
+
+  {
+    id: "split-fence-peg",
+    name: "Split Fence Peg",
+    rarity: "common",
+    image: "assets/collectibles/split-fence-peg.png"
+  },
+
+  {
+    id: "old-brass-buckle",
+    name: "Old Brass Buckle",
+    rarity: "common",
+    image: "assets/collectibles/old-brass-buckle.png"
+  },
+
+  {
+    id: "tallow-candle-stub",
+    name: "Tallow Candle Stub",
+    rarity: "common",
+    image: "assets/collectibles/tallow-candle-stub.png"
+  },
+
+  {
+    id: "folded-feed-sack",
+    name: "Folded Feed Sack",
+    rarity: "common",
+    image: "assets/collectibles/folded-feed-sack.png"
+  },
+
+  {
+    id: "crookmakers-wood-offcut",
+    name: "Crookmaker's Wood Offcut",
+    rarity: "common",
+    image: "assets/collectibles/crookmakers-wood-offcut.png"
+  },
+
+  {
+    id: "sootnose-lamb",
+    name: "Sootnose Lamb",
+    rarity: "common",
+    image: "assets/collectibles/sootnose-lamb.png"
+  },
+
+  {
+    id: "fencepost-sparrow",
+    name: "Fencepost Sparrow",
+    rarity: "common",
+    image: "assets/collectibles/fencepost-sparrow.png"
+  },
+
+  {
+    id: "pasture-mouse",
+    name: "Pasture Mouse",
+    rarity: "common",
+    image: "assets/collectibles/pasture-mouse.png"
   },
 
 
@@ -143,6 +231,62 @@ const COLLECTIBLES = [
     image: "assets/collectibles/wayfarers-match-tin.png"
   },
 
+  {
+    id: "shepherds-knot-charm",
+    name: "Shepherd's Knot Charm",
+    rarity: "uncommon",
+    image: "assets/collectibles/shepherds-knot-charm.png"
+  },
+
+  {
+    id: "stormstitch-needle",
+    name: "Stormstitch Needle",
+    rarity: "uncommon",
+    image: "assets/collectibles/stormstitch-needle.png"
+  },
+
+  {
+    id: "violet-rain-flask",
+    name: "Violet Rain Flask",
+    rarity: "uncommon",
+    image: "assets/collectibles/violet-rain-flask.png"
+  },
+
+  {
+    id: "black-feather-keepsake",
+    name: "Black Feather Keepsake",
+    rarity: "uncommon",
+    image: "assets/collectibles/black-feather-keepsake.png"
+  },
+
+  {
+    id: "brass-field-compass",
+    name: "Brass Field Compass",
+    rarity: "uncommon",
+    image: "assets/collectibles/brass-field-compass.png"
+  },
+
+  {
+    id: "mended-bell-strap",
+    name: "Mended Bell Strap",
+    rarity: "uncommon",
+    image: "assets/collectibles/mended-bell-strap.png"
+  },
+
+  {
+    id: "ashen-lamb-figurine",
+    name: "Ashen Lamb Figurine",
+    rarity: "uncommon",
+    image: "assets/collectibles/ashen-lamb-figurine.png"
+  },
+
+  {
+    id: "gatekeepers-brass-key",
+    name: "Gatekeeper's Brass Key",
+    rarity: "uncommon",
+    image: "assets/collectibles/gatekeepers-brass-key.png"
+  },
+
 
   /* RARE */
 
@@ -179,6 +323,41 @@ const COLLECTIBLES = [
     name: "Stormworn Crook Head",
     rarity: "rare",
     image: "assets/collectibles/stormworn-crook-head.png"
+  },
+
+  {
+    id: "blackwool-ewe",
+    name: "Blackwool Ewe",
+    rarity: "rare",
+    image: "assets/collectibles/blackwool-ewe.png"
+  },
+
+  {
+    id: "shepherds-field-journal",
+    name: "Shepherd's Field Journal",
+    rarity: "rare",
+    image: "assets/collectibles/shepherds-field-journal.png"
+  },
+
+  {
+    id: "stormglass-crook-ring",
+    name: "Stormglass Crook Ring",
+    rarity: "rare",
+    image: "assets/collectibles/stormglass-crook-ring.png"
+  },
+
+  {
+    id: "nightwatch-signal-horn",
+    name: "Nightwatch Signal Horn",
+    rarity: "rare",
+    image: "assets/collectibles/nightwatch-signal-horn.png"
+  },
+
+  {
+    id: "rainworn-flock-standard",
+    name: "Rainworn Flock Standard",
+    rarity: "rare",
+    image: "assets/collectibles/rainworn-flock-standard.png"
   },
 
 
@@ -636,20 +815,19 @@ function isCollectionComplete(
   collection
 ) {
 
+  /*
+     This is intentionally based on 50 unique items,
+     not an old stored completed=true value from the
+     original 22-item collection.
+  */
+
   return (
     !!collection
     &&
-    (
-      collection.completed ===
-        true
-
-      ||
-
-      getSafeUniqueCount(
-        collection
-      ) >=
-        TOTAL_ITEMS
-    )
+    getSafeUniqueCount(
+      collection
+    ) >=
+      TOTAL_ITEMS
   );
 }
 
@@ -883,7 +1061,7 @@ function getProgressMessage(
 
 
   if (
-    uniqueCount >= 20
+    uniqueCount >= 40
   ) {
 
     return "THE FINAL STRETCH";
@@ -891,7 +1069,7 @@ function getProgressMessage(
 
 
   if (
-    uniqueCount >= 15
+    uniqueCount >= 30
   ) {
 
     return "THE CACHE REMEMBERS";
@@ -899,7 +1077,7 @@ function getProgressMessage(
 
 
   if (
-    uniqueCount >= 10
+    uniqueCount >= 20
   ) {
 
     return "THE FLOCK GATHERS";
@@ -907,7 +1085,7 @@ function getProgressMessage(
 
 
   if (
-    uniqueCount >= 5
+    uniqueCount >= 10
   ) {
 
     return "THE TRAIL BEGINS";
@@ -1860,14 +2038,8 @@ function injectEnhancementStyles() {
 
         linear-gradient(
           90deg,
-          var(
-            --stray-brass-dark,
-            #5d452d
-          ),
-          var(
-            --stray-brass,
-            #9a7446
-          ),
+          #5d452d,
+          #9a7446,
           #b88cff,
           #e7ddc8
         );
@@ -1918,24 +2090,6 @@ function injectEnhancementStyles() {
 
 
     #collection-book.is-complete
-    .collection-item.rarity-legendary.owned
-    img {
-
-      filter:
-
-        drop-shadow(
-          0 8px 9px
-          rgba(0, 0, 0, 0.58)
-        )
-
-        drop-shadow(
-          0 0 8px
-          rgba(184, 140, 255, 0.18)
-        );
-    }
-
-
-    #collection-book.is-complete
     #collection-share-link {
 
       border-color:
@@ -1951,6 +2105,22 @@ function injectEnhancementStyles() {
           rgba(116, 101, 140, 0.28),
           rgba(36, 36, 38, 0.8)
         );
+    }
+
+
+    @media (
+      prefers-reduced-motion: reduce
+    ) {
+
+      #collection-book.is-complete
+      #book-progress-fill,
+
+      #collection-book.is-complete
+      #cache-completion-banner {
+
+        animation:
+          none !important;
+      }
     }
 
 
@@ -2057,11 +2227,11 @@ function ensureCompletionBanner() {
     </div>
 
     <div id="cache-completion-count">
-      22 / 22
+      50 / 50
     </div>
 
     <div id="cache-completion-copy">
-      Every relic of the Shepherd's Cache has been recovered.
+      Every relic of Shepherd's Cache Series I has been recovered.
     </div>
 
   `;
@@ -2069,6 +2239,8 @@ function ensureCompletionBanner() {
 
   if (
     filterToolbar
+    &&
+    filterToolbar.parentNode
   ) {
 
     filterToolbar.parentNode.insertBefore(
@@ -2077,7 +2249,11 @@ function ensureCompletionBanner() {
     );
   }
 
-  else {
+  else if (
+    sectionsElement
+    &&
+    sectionsElement.parentNode
+  ) {
 
     sectionsElement.parentNode.insertBefore(
       completionBanner,
@@ -2129,15 +2305,22 @@ function ensureStatsPanel() {
   `;
 
 
-  filterToolbar.parentNode.insertBefore(
-    statsPanel,
+  if (
     filterToolbar
-  );
+    &&
+    filterToolbar.parentNode
+  ) {
+
+    filterToolbar.parentNode.insertBefore(
+      statsPanel,
+      filterToolbar
+    );
+  }
 }
 
 
 /* =====================================================
-   COMPLETION TREATMENT
+   COMPLETION
    ===================================================== */
 
 function updateCompletionTreatment(
@@ -2283,8 +2466,6 @@ function ensureFilterToolbar() {
   );
 
 
-  /* SHOW FILTER */
-
   const statusGroup =
     document.createElement(
       "div"
@@ -2346,8 +2527,6 @@ function ensureFilterToolbar() {
   );
 
 
-  /* RARITY FILTER */
-
   const rarityGroup =
     document.createElement(
       "div"
@@ -2408,8 +2587,6 @@ function ensureFilterToolbar() {
   );
 
 
-  /* SHARE */
-
   shareButton =
     document.createElement(
       "button"
@@ -2456,7 +2633,7 @@ function ensureFilterToolbar() {
 
 
 /* =====================================================
-   FILTER BUTTON STATE
+   FILTER STATES
    ===================================================== */
 
 function updateFilterButtonStates() {
@@ -2530,7 +2707,7 @@ function updateFilterButtonStates() {
 
 
 /* =====================================================
-   SHARE LINK
+   SHARE
    ===================================================== */
 
 function getDefaultShareButtonText() {
@@ -2835,7 +3012,7 @@ async function fetchCollection(
 
 
 /* =====================================================
-   COLLECTION ITEM
+   COLLECTION CARD
    ===================================================== */
 
 function createCollectionItem(
@@ -3044,7 +3221,7 @@ function collectibleMatchesStatus(
 
 
 /* =====================================================
-   RARITY SECTION
+   RARITY SECTIONS
    ===================================================== */
 
 function createRaritySection(
@@ -3273,7 +3450,7 @@ function updateCollectionSummary(
 
 
 /* =====================================================
-   COLLECTION STATISTICS
+   COLLECTION STATS
    ===================================================== */
 
 function updateCollectionStats(
@@ -3488,20 +3665,6 @@ function updateCollectionStats(
       "MOST OWNED RELIC · <strong>NONE YET</strong>";
   }
 
-
-  else if (
-    mostOwned.count === 1
-  ) {
-
-    mostOwnedElement.innerHTML =
-      "MOST OWNED RELIC · <strong>"
-      +
-      mostOwned.item.name
-      +
-      "</strong> · ×1";
-  }
-
-
   else {
 
     mostOwnedElement.innerHTML =
@@ -3517,7 +3680,7 @@ function updateCollectionStats(
 
 
 /* =====================================================
-   FILTERED SECTIONS
+   RENDER FILTERS
    ===================================================== */
 
 function renderFilteredSections() {
@@ -3599,7 +3762,6 @@ function renderFilteredSections() {
         "NO DISCOVERED RELICS MATCH THIS FILTER";
     }
 
-
     else if (
       currentStatusFilter ===
       "missing"
@@ -3608,7 +3770,6 @@ function renderFilteredSections() {
       empty.textContent =
         "NO MISSING RELICS MATCH THIS FILTER";
     }
-
 
     else {
 
@@ -3625,7 +3786,7 @@ function renderFilteredSections() {
 
 
 /* =====================================================
-   FULL COLLECTION RENDER
+   FULL RENDER
    ===================================================== */
 
 function renderCollection(
@@ -3762,7 +3923,7 @@ function renderCollection(
 
       ? displayName
         +
-        " · 22/22 · Shepherd's Cache"
+        " · 50/50 · Shepherd's Cache"
 
       : displayName
         +
@@ -3971,7 +4132,6 @@ if (
     initialUsername
   );
 }
-
 
 else {
 
