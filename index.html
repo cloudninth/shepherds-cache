@@ -1,65 +1,27 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#0d0e0f"
-  >
-
-  <title>
-    Shepherd's Cache
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="collection.css"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d0e0f">
+  <title>Shepherd's Cache</title>
+  <link rel="stylesheet" href="collection.css?v=series-v2">
 </head>
 
-
 <body>
-
   <main id="page-shell">
 
-
     <header id="site-header">
-
-      <div class="site-eyebrow">
-        THE PATCHWORK PASTURE
-      </div>
-
-      <h1>
-        SHEPHERD'S CACHE
-      </h1>
-
-      <p>
-        A record of what the flock has discovered.
-      </p>
-
+      <div class="site-eyebrow">THE FLOCK'S ARCHIVE</div>
+      <h1>SHEPHERD'S CACHE</h1>
+      <p>A record of what the flock has discovered.</p>
     </header>
 
-
     <section id="viewer-search">
-
       <form id="viewer-search-form">
-
-        <label for="viewer-search-input">
-          TWITCH VIEWER
-        </label>
+        <label for="viewer-search-input">TWITCH VIEWER</label>
 
         <div class="viewer-search-row">
-
           <input
             id="viewer-search-input"
             type="text"
@@ -68,134 +30,66 @@
             placeholder="Enter Twitch username"
           >
 
-          <button
-            type="submit"
-          >
-            OPEN CACHE
-          </button>
-
+          <button type="submit">OPEN CACHE</button>
         </div>
-
       </form>
-
     </section>
 
+    <section id="series-picker">
+      <label for="series-select">COLLECTION SERIES</label>
 
-    <section
-      id="page-status"
-      aria-live="polite"
-    >
+      <select id="series-select" disabled>
+        <option>LOADING SERIES...</option>
+      </select>
+
+      <div id="series-caption"></div>
     </section>
 
+    <section id="page-status" aria-live="polite"></section>
 
-    <section
-      id="collection-book"
-      hidden
-    >
-
+    <section id="collection-book" hidden>
       <div id="collection-book-panel">
 
-
         <header id="collection-book-header">
-
           <div>
-
-            <div class="book-eyebrow">
-              THE FLOCK'S RECORD
-            </div>
-
-            <h2>
-              SHEPHERD'S CACHE
-            </h2>
-
-            <div id="collection-book-viewer">
-              @viewer
-            </div>
-
+            <div class="book-eyebrow">THE FLOCK'S RECORD</div>
+            <h2>SHEPHERD'S CACHE</h2>
+            <div id="collection-book-viewer">@viewer</div>
           </div>
-
 
           <div id="collection-total-pulls">
-
-            <span class="stat-label">
-              TOTAL PULLS
-            </span>
-
-            <span
-              id="total-pulls-value"
-              class="stat-value"
-            >
-              0
-            </span>
-
+            <span class="stat-label">TOTAL PULLS</span>
+            <span id="total-pulls-value" class="stat-value">0</span>
           </div>
-
         </header>
 
-
         <section id="book-progress-area">
-
           <div id="book-progress-top">
-
-            <span>
-              COLLECTION PROGRESS
-            </span>
-
-            <span id="book-progress-count">
-              0 / 50
-            </span>
-
+            <span>COLLECTION PROGRESS</span>
+            <span id="book-progress-count">0 / 50</span>
           </div>
-
 
           <div id="book-progress-track">
-
-            <div id="book-progress-fill">
-            </div>
-
+            <div id="book-progress-fill"></div>
           </div>
 
-
-          <div id="book-progress-message">
-            THE FLOCK IS STILL GATHERING
-          </div>
-
+          <div id="book-progress-message">THE FLOCK IS STILL GATHERING</div>
         </section>
 
-
-        <section id="collection-sections">
-        </section>
-
+        <section id="collection-sections"></section>
 
         <footer id="collection-book-footer">
-
-          <span>
-            SHEPHERD'S CACHE · SERIES I
-          </span>
-
-          <span id="collection-last-updated">
-            UPDATED —
-          </span>
-
+          <span>SHEPHERD'S CACHE</span>
+          <span id="collection-last-updated">UPDATED —</span>
         </footer>
-
-
       </div>
-
     </section>
-
 
   </main>
 
-
-  <script src="config.js"></script>
-
-  <script src="collection.js"></script>
-
-  <script src="collection-details.js"></script>
-
-  <script src="collection-achievements.js"></script>
-
+  <script src="config.js?v=series-v2"></script>
+  <script src="collection.js?v=series-v2"></script>
+  <script src="collection-details.js?v=series-v2"></script>
+  <script src="collection-achievements.js?v=series-v2"></script>
 </body>
-
 </html>
