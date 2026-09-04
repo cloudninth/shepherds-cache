@@ -1,500 +1,271 @@
 /* =====================================================
    STRAY
    SHEPHERD'S CACHE
-
    PUBLIC COLLECTION BOOK
-   SUPABASE VERSION
+   Supabase + Filters + Share Link + Summary
    ===================================================== */
-
 
 "use strict";
 
-
-/* =====================================================
+/* =========================
    CONFIG
-   ===================================================== */
+   ========================= */
 
+const CONFIG = window.ShepherdCacheConfig || {};
 
-const CONFIG =
-  window.ShepherdCacheConfig || {};
+const SUPABASE_URL = String(
+  CONFIG.supabaseUrl || ""
+)
+  .trim()
+  .replace(/\/+$/, "");
 
+const SUPABASE_PUBLISHABLE_KEY = String(
+  CONFIG.supabasePublishableKey || ""
+).trim();
 
-const SUPABASE_URL =
-  String(
-    CONFIG.supabaseUrl || ""
-  )
-    .trim()
-    .replace(
-      /\/+$/,
-      ""
-    );
-
-
-const SUPABASE_PUBLISHABLE_KEY =
-  String(
-    CONFIG.supabasePublishableKey || ""
-  )
-    .trim();
-
-
-const TOTAL_ITEMS =
-  22;
-
-
-
-/* =====================================================
-   RARITY DATA
-   ===================================================== */
-
+const TOTAL_ITEMS = 22;
 
 const RARITY_ORDER = [
-
   "common",
   "uncommon",
   "rare",
   "legendary"
-
 ];
 
-
 const RARITY_NAMES = {
-
-  common:
-    "COMMON",
-
-  uncommon:
-    "UNCOMMON",
-
-  rare:
-    "RARE",
-
-  legendary:
-    "LEGENDARY"
-
+  common: "COMMON",
+  uncommon: "UNCOMMON",
+  rare: "RARE",
+  legendary: "LEGENDARY"
 };
 
 
-
-/* =====================================================
+/* =========================
    COLLECTIBLES
-   ===================================================== */
-
+   ========================= */
 
 const COLLECTIBLES = [
 
-
   /* COMMON */
 
-
   {
-    id:
-      "worn-bell",
-
-    name:
-      "Worn Shepherd Bell",
-
-    rarity:
-      "common",
-
-    image:
-      "assets/collectibles/worn-bell.png"
+    id: "worn-bell",
+    name: "Worn Shepherd Bell",
+    rarity: "common",
+    image: "assets/collectibles/worn-bell.png"
   },
 
-
   {
-    id:
-      "faded-wool-patch",
-
-    name:
-      "Faded Wool Patch",
-
-    rarity:
-      "common",
-
-    image:
-      "assets/collectibles/faded-wool-patch.png"
+    id: "faded-wool-patch",
+    name: "Faded Wool Patch",
+    rarity: "common",
+    image: "assets/collectibles/faded-wool-patch.png"
   },
 
-
   {
-    id:
-      "crooked-fence-charm",
-
-    name:
-      "Crooked Fence Charm",
-
-    rarity:
-      "common",
-
-    image:
-      "assets/collectibles/crooked-fence-charm.png"
+    id: "crooked-fence-charm",
+    name: "Crooked Fence Charm",
+    rarity: "common",
+    image: "assets/collectibles/crooked-fence-charm.png"
   },
 
-
   {
-    id:
-      "wayfarers-feather",
-
-    name:
-      "Wayfarer's Feather",
-
-    rarity:
-      "common",
-
-    image:
-      "assets/collectibles/wayfarers-feather.png"
+    id: "wayfarers-feather",
+    name: "Wayfarer's Feather",
+    rarity: "common",
+    image: "assets/collectibles/wayfarers-feather.png"
   },
 
-
   {
-    id:
-      "old-pasture-token",
-
-    name:
-      "Old Pasture Token",
-
-    rarity:
-      "common",
-
-    image:
-      "assets/collectibles/old-pasture-token.png"
+    id: "old-pasture-token",
+    name: "Old Pasture Token",
+    rarity: "common",
+    image: "assets/collectibles/old-pasture-token.png"
   },
-
 
 
   /* UNCOMMON */
 
-
   {
-    id:
-      "violet-lamb",
-
-    name:
-      "Violet Wool Lamb",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/violet-lamb.png"
+    id: "violet-lamb",
+    name: "Violet Wool Lamb",
+    rarity: "uncommon",
+    image: "assets/collectibles/violet-lamb.png"
   },
 
-
   {
-    id:
-      "brass-crook-charm",
-
-    name:
-      "Brass Crook Charm",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/brass-crook-charm.png"
+    id: "brass-crook-charm",
+    name: "Brass Crook Charm",
+    rarity: "uncommon",
+    image: "assets/collectibles/brass-crook-charm.png"
   },
 
-
   {
-    id:
-      "stormglass-bead",
-
-    name:
-      "Stormglass Bead",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/stormglass-bead.png"
+    id: "stormglass-bead",
+    name: "Stormglass Bead",
+    rarity: "uncommon",
+    image: "assets/collectibles/stormglass-bead.png"
   },
 
-
   {
-    id:
-      "rainworn-map-fragment",
-
-    name:
-      "Rainworn Map Fragment",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/rainworn-map-fragment.png"
+    id: "rainworn-map-fragment",
+    name: "Rainworn Map Fragment",
+    rarity: "uncommon",
+    image: "assets/collectibles/rainworn-map-fragment.png"
   },
 
-
   {
-    id:
-      "mended-flock-tag",
-
-    name:
-      "Mended Flock Tag",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/mended-flock-tag.png"
+    id: "mended-flock-tag",
+    name: "Mended Flock Tag",
+    rarity: "uncommon",
+    image: "assets/collectibles/mended-flock-tag.png"
   },
 
-
   {
-    id:
-      "violet-thread-spool",
-
-    name:
-      "Violet Thread Spool",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/violet-thread-spool.png"
+    id: "violet-thread-spool",
+    name: "Violet Thread Spool",
+    rarity: "uncommon",
+    image: "assets/collectibles/violet-thread-spool.png"
   },
 
-
   {
-    id:
-      "wayfarers-match-tin",
-
-    name:
-      "Wayfarer's Match Tin",
-
-    rarity:
-      "uncommon",
-
-    image:
-      "assets/collectibles/wayfarers-match-tin.png"
+    id: "wayfarers-match-tin",
+    name: "Wayfarer's Match Tin",
+    rarity: "uncommon",
+    image: "assets/collectibles/wayfarers-match-tin.png"
   },
-
 
 
   /* RARE */
 
-
   {
-    id:
-      "wandering-ram",
-
-    name:
-      "Wandering Ram",
-
-    rarity:
-      "rare",
-
-    image:
-      "assets/collectibles/wandering-ram.png"
+    id: "wandering-ram",
+    name: "Wandering Ram",
+    rarity: "rare",
+    image: "assets/collectibles/wandering-ram.png"
   },
 
-
   {
-    id:
-      "shepherds-seal",
-
-    name:
-      "Shepherd's Seal",
-
-    rarity:
-      "rare",
-
-    image:
-      "assets/collectibles/shepherds-seal.png"
+    id: "shepherds-seal",
+    name: "Shepherd's Seal",
+    rarity: "rare",
+    image: "assets/collectibles/shepherds-seal.png"
   },
 
-
   {
-    id:
-      "lost-flock-bell",
-
-    name:
-      "Lost Flock Bell",
-
-    rarity:
-      "rare",
-
-    image:
-      "assets/collectibles/lost-flock-bell.png"
+    id: "lost-flock-bell",
+    name: "Lost Flock Bell",
+    rarity: "rare",
+    image: "assets/collectibles/lost-flock-bell.png"
   },
 
-
   {
-    id:
-      "blackglass-shepherd-lantern",
-
-    name:
-      "Blackglass Shepherd Lantern",
-
-    rarity:
-      "rare",
-
-    image:
-      "assets/collectibles/blackglass-shepherd-lantern.png"
+    id: "blackglass-shepherd-lantern",
+    name: "Blackglass Shepherd Lantern",
+    rarity: "rare",
+    image: "assets/collectibles/blackglass-shepherd-lantern.png"
   },
 
-
   {
-    id:
-      "stormworn-crook-head",
-
-    name:
-      "Stormworn Crook Head",
-
-    rarity:
-      "rare",
-
-    image:
-      "assets/collectibles/stormworn-crook-head.png"
+    id: "stormworn-crook-head",
+    name: "Stormworn Crook Head",
+    rarity: "rare",
+    image: "assets/collectibles/stormworn-crook-head.png"
   },
-
 
 
   /* LEGENDARY */
 
-
   {
-    id:
-      "ninth-lamb",
-
-    name:
-      "The Ninth Lamb",
-
-    rarity:
-      "legendary",
-
-    image:
-      "assets/collectibles/ninth-lamb.png"
+    id: "ninth-lamb",
+    name: "The Ninth Lamb",
+    rarity: "legendary",
+    image: "assets/collectibles/ninth-lamb.png"
   },
 
-
   {
-    id:
-      "the-first-bell",
-
-    name:
-      "The First Bell",
-
-    rarity:
-      "legendary",
-
-    image:
-      "assets/collectibles/the-first-bell.png"
+    id: "the-first-bell",
+    name: "The First Bell",
+    rarity: "legendary",
+    image: "assets/collectibles/the-first-bell.png"
   },
 
-
   {
-    id:
-      "the-pale-ram",
-
-    name:
-      "The Pale Ram",
-
-    rarity:
-      "legendary",
-
-    image:
-      "assets/collectibles/the-pale-ram.png"
+    id: "the-pale-ram",
+    name: "The Pale Ram",
+    rarity: "legendary",
+    image: "assets/collectibles/the-pale-ram.png"
   },
 
-
   {
-    id:
-      "ninth-hour-reliquary",
-
-    name:
-      "Ninth Hour Reliquary",
-
-    rarity:
-      "legendary",
-
-    image:
-      "assets/collectibles/ninth-hour-reliquary.png"
+    id: "ninth-hour-reliquary",
+    name: "Ninth Hour Reliquary",
+    rarity: "legendary",
+    image: "assets/collectibles/ninth-hour-reliquary.png"
   },
 
-
   {
-    id:
-      "cloud-ninth-familiar",
-
-    name:
-      "Cloud Ninth Familiar",
-
-    rarity:
-      "legendary",
-
-    image:
-      "assets/collectibles/cloud-ninth-familiar.png"
+    id: "cloud-ninth-familiar",
+    name: "Cloud Ninth Familiar",
+    rarity: "legendary",
+    image: "assets/collectibles/cloud-ninth-familiar.png"
   }
-
 ];
 
 
-
-/* =====================================================
+/* =========================
    ELEMENTS
-   ===================================================== */
-
+   ========================= */
 
 const searchForm =
   document.getElementById(
     "viewer-search-form"
   );
 
-
 const searchInput =
   document.getElementById(
     "viewer-search-input"
   );
-
 
 const statusElement =
   document.getElementById(
     "page-status"
   );
 
-
 const collectionBook =
   document.getElementById(
     "collection-book"
   );
-
 
 const viewerElement =
   document.getElementById(
     "collection-book-viewer"
   );
 
-
 const totalPullsElement =
   document.getElementById(
     "total-pulls-value"
   );
-
 
 const progressCountElement =
   document.getElementById(
     "book-progress-count"
   );
 
-
 const progressFillElement =
   document.getElementById(
     "book-progress-fill"
   );
-
 
 const progressMessageElement =
   document.getElementById(
     "book-progress-message"
   );
 
-
 const sectionsElement =
   document.getElementById(
     "collection-sections"
   );
-
 
 const lastUpdatedElement =
   document.getElementById(
@@ -502,11 +273,26 @@ const lastUpdatedElement =
   );
 
 
+/* =========================
+   STATE
+   ========================= */
 
-/* =====================================================
+let currentCollection = null;
+
+let currentStatusFilter = "all";
+
+let currentRarityFilter = "all";
+
+let filterToolbar = null;
+
+let collectionSummary = null;
+
+let shareButton = null;
+
+
+/* =========================
    HELPERS
-   ===================================================== */
-
+   ========================= */
 
 function normalizeUsername(
   username
@@ -521,7 +307,6 @@ function normalizeUsername(
       ""
     )
     .toLowerCase();
-
 }
 
 
@@ -533,12 +318,10 @@ function setStatus(
   statusElement.textContent =
     message || "";
 
-
   statusElement.className =
     type
       ? "status-" + type
       : "";
-
 }
 
 
@@ -550,7 +333,6 @@ function setPageUsername(
     normalizeUsername(
       username
     );
-
 
   const url =
     new URL(
@@ -565,7 +347,9 @@ function setPageUsername(
       cleanUsername
     );
 
-  } else {
+  }
+
+  else {
 
     url.searchParams.delete(
       "user"
@@ -578,7 +362,6 @@ function setPageUsername(
     "",
     url
   );
-
 }
 
 
@@ -595,7 +378,61 @@ function getUsernameFromPage() {
       "user"
     )
   );
+}
 
+
+function getItemsObject(
+  collection
+) {
+
+  if (
+    !collection ||
+    collection.items == null
+  ) {
+
+    return {};
+  }
+
+
+  if (
+    typeof collection.items ===
+    "object"
+  ) {
+
+    return collection.items;
+  }
+
+
+  if (
+    typeof collection.items ===
+    "string"
+  ) {
+
+    try {
+
+      const parsed =
+        JSON.parse(
+          collection.items
+        );
+
+
+      if (
+        parsed &&
+        typeof parsed ===
+        "object"
+      ) {
+
+        return parsed;
+      }
+
+    }
+
+    catch (error) {
+    }
+  }
+
+
+  return {};
 }
 
 
@@ -605,14 +442,9 @@ function getOwnedCount(
 ) {
 
   const items =
-    collection &&
-    collection.items &&
-    typeof collection.items ===
-      "object"
-
-      ? collection.items
-
-      : {};
+    getItemsObject(
+      collection
+    );
 
 
   const value =
@@ -635,7 +467,133 @@ function getOwnedCount(
   return Math.floor(
     value
   );
+}
 
+
+function getUniqueCountFromItems(
+  collection
+) {
+
+  return COLLECTIBLES.reduce(
+    (
+      count,
+      item
+    ) => {
+
+      return (
+        count +
+        (
+          getOwnedCount(
+            collection,
+            item.id
+          ) > 0
+            ? 1
+            : 0
+        )
+      );
+    },
+    0
+  );
+}
+
+
+function getSafeUniqueCount(
+  collection
+) {
+
+  const rpcCount =
+    Number(
+      collection &&
+      collection.unique_count != null
+
+        ? collection.unique_count
+
+        : NaN
+    );
+
+
+  const itemCount =
+    getUniqueCountFromItems(
+      collection
+    );
+
+
+  if (
+    Number.isFinite(
+      rpcCount
+    )
+  ) {
+
+    return Math.max(
+      0,
+      Math.min(
+        TOTAL_ITEMS,
+        Math.floor(
+          Math.max(
+            rpcCount,
+            itemCount
+          )
+        )
+      )
+    );
+  }
+
+
+  return itemCount;
+}
+
+
+function getSafeTotalPulls(
+  collection
+) {
+
+  const value =
+    Number(
+      collection &&
+      collection.total_pulls != null
+
+        ? collection.total_pulls
+
+        : 0
+    );
+
+
+  if (
+    !Number.isFinite(
+      value
+    )
+  ) {
+
+    return 0;
+  }
+
+
+  return Math.max(
+    0,
+    Math.floor(
+      value
+    )
+  );
+}
+
+
+function getDuplicatePulls(
+  collection
+) {
+
+  return Math.max(
+    0,
+
+    getSafeTotalPulls(
+      collection
+    )
+
+    -
+
+    getSafeUniqueCount(
+      collection
+    )
+  );
 }
 
 
@@ -666,36 +624,933 @@ function formatUpdatedAt(
 
 
   return (
-    "UPDATED " +
+    "UPDATED "
+    +
     date.toLocaleString(
       undefined,
       {
-        month:
-          "short",
-
-        day:
-          "numeric",
-
-        year:
-          "numeric",
-
-        hour:
-          "numeric",
-
-        minute:
-          "2-digit"
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
       }
     )
   );
-
 }
 
 
+function getProgressMessage(
+  uniqueCount,
+  completed
+) {
 
-/* =====================================================
+  if (completed) {
+
+    return "THE FLOCK IS COMPLETE";
+  }
+
+
+  if (
+    uniqueCount >= 20
+  ) {
+
+    return "THE FINAL STRETCH";
+  }
+
+
+  if (
+    uniqueCount >= 15
+  ) {
+
+    return "THE CACHE REMEMBERS";
+  }
+
+
+  if (
+    uniqueCount >= 10
+  ) {
+
+    return "THE FLOCK GATHERS";
+  }
+
+
+  if (
+    uniqueCount >= 5
+  ) {
+
+    return "THE TRAIL BEGINS";
+  }
+
+
+  return "THE FLOCK IS STILL GATHERING";
+}
+
+
+/* =========================
+   EXTRA UI STYLES
+
+   This lets us add filters without
+   changing collection.css.
+   ========================= */
+
+function injectEnhancementStyles() {
+
+  if (
+    document.getElementById(
+      "shepherd-cache-public-enhancement-styles"
+    )
+  ) {
+
+    return;
+  }
+
+
+  const style =
+    document.createElement(
+      "style"
+    );
+
+
+  style.id =
+    "shepherd-cache-public-enhancement-styles";
+
+
+  style.textContent = `
+
+    #collection-tools {
+
+      position:
+        relative;
+
+      z-index:
+        3;
+
+      margin:
+        8px 0 4px;
+
+      padding:
+        14px;
+
+      border:
+        1px solid
+        rgba(154, 116, 70, 0.25);
+
+      border-radius:
+        12px;
+
+      background:
+
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(116, 101, 140, 0.10),
+          transparent 65%
+        ),
+
+        rgba(10, 11, 12, 0.42);
+    }
+
+
+    #collection-summary {
+
+      display:
+        flex;
+
+      flex-wrap:
+        wrap;
+
+      justify-content:
+        center;
+
+      gap:
+        7px;
+
+      margin-bottom:
+        12px;
+    }
+
+
+    .cache-summary-chip {
+
+      padding:
+        6px 9px;
+
+      border:
+        1px solid
+        rgba(231, 221, 200, 0.10);
+
+      border-radius:
+        999px;
+
+      background:
+        rgba(13, 14, 15, 0.68);
+
+      color:
+        var(
+          --stray-cream-muted,
+          #bfb49d
+        );
+
+      font-size:
+        10px;
+
+      font-weight:
+        700;
+
+      letter-spacing:
+        1px;
+
+      white-space:
+        nowrap;
+    }
+
+
+    .cache-summary-chip strong {
+
+      color:
+        var(
+          --stray-cream,
+          #e7ddc8
+        );
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        11px;
+    }
+
+
+    .collection-filter-group {
+
+      display:
+        flex;
+
+      flex-wrap:
+        wrap;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      gap:
+        7px;
+
+      margin-top:
+        8px;
+    }
+
+
+    .collection-filter-label {
+
+      margin-right:
+        3px;
+
+      color:
+        var(
+          --stray-brass,
+          #9a7446
+        );
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        9px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        1.7px;
+    }
+
+
+    .collection-filter-button,
+    #collection-share-link {
+
+      appearance:
+        none;
+
+      min-height:
+        31px;
+
+      padding:
+        6px 10px;
+
+      border:
+        1px solid
+        rgba(154, 116, 70, 0.34);
+
+      border-radius:
+        999px;
+
+      background:
+        rgba(36, 36, 38, 0.72);
+
+      color:
+        var(
+          --stray-cream-muted,
+          #bfb49d
+        );
+
+      font:
+        inherit;
+
+      font-size:
+        9px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        1.1px;
+
+      cursor:
+        pointer;
+
+      transition:
+        border-color 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+    }
+
+
+    .collection-filter-button:hover,
+    #collection-share-link:hover {
+
+      transform:
+        translateY(-1px);
+
+      border-color:
+        rgba(184, 140, 255, 0.55);
+
+      color:
+        var(
+          --stray-cream,
+          #e7ddc8
+        );
+    }
+
+
+    .collection-filter-button.is-active {
+
+      border-color:
+        rgba(184, 140, 255, 0.78);
+
+      background:
+
+        linear-gradient(
+          135deg,
+          rgba(116, 101, 140, 0.42),
+          rgba(154, 116, 70, 0.22)
+        );
+
+      color:
+        var(
+          --stray-cream,
+          #e7ddc8
+        );
+
+      box-shadow:
+        0 0 14px
+        rgba(184, 140, 255, 0.08);
+    }
+
+
+    #collection-share-link {
+
+      margin-top:
+        11px;
+
+      width:
+        100%;
+
+      border-radius:
+        8px;
+
+      color:
+        var(
+          --stray-brass,
+          #9a7446
+        );
+    }
+
+
+    #collection-share-link.is-copied {
+
+      border-color:
+        rgba(184, 140, 255, 0.72);
+
+      color:
+        #b88cff;
+    }
+
+
+    .collection-filter-empty {
+
+      margin:
+        28px 0 12px;
+
+      padding:
+        22px 16px;
+
+      border:
+        1px dashed
+        rgba(154, 116, 70, 0.28);
+
+      border-radius:
+        10px;
+
+      text-align:
+        center;
+
+      color:
+        var(
+          --stray-cream-muted,
+          #bfb49d
+        );
+
+      font-family:
+        "Cinzel",
+        serif;
+
+      font-size:
+        11px;
+
+      font-weight:
+        700;
+
+      letter-spacing:
+        1.4px;
+    }
+
+
+    @media (
+      max-width: 620px
+    ) {
+
+      #collection-tools {
+
+        padding:
+          11px;
+      }
+
+
+      .collection-filter-label {
+
+        width:
+          100%;
+
+        margin:
+          0 0 2px;
+
+        text-align:
+          center;
+      }
+
+
+      .collection-filter-button {
+
+        flex:
+          1 1 auto;
+      }
+    }
+
+  `;
+
+
+  document.head.appendChild(
+    style
+  );
+}
+
+
+/* =========================
+   FILTER + SHARE TOOLBAR
+   ========================= */
+
+function makeFilterButton(
+  label,
+  type,
+  value
+) {
+
+  const button =
+    document.createElement(
+      "button"
+    );
+
+
+  button.type =
+    "button";
+
+
+  button.className =
+    "collection-filter-button";
+
+
+  button.textContent =
+    label;
+
+
+  button.dataset.filterType =
+    type;
+
+
+  button.dataset.filterValue =
+    value;
+
+
+  button.addEventListener(
+    "click",
+    function() {
+
+      if (
+        type ===
+        "status"
+      ) {
+
+        currentStatusFilter =
+          value;
+      }
+
+      else {
+
+        currentRarityFilter =
+          value;
+      }
+
+
+      updateFilterButtonStates();
+
+      renderFilteredSections();
+    }
+  );
+
+
+  return button;
+}
+
+
+function ensureFilterToolbar() {
+
+  if (
+    filterToolbar
+  ) {
+
+    return;
+  }
+
+
+  injectEnhancementStyles();
+
+
+  filterToolbar =
+    document.createElement(
+      "section"
+    );
+
+
+  filterToolbar.id =
+    "collection-tools";
+
+
+  collectionSummary =
+    document.createElement(
+      "div"
+    );
+
+
+  collectionSummary.id =
+    "collection-summary";
+
+
+  filterToolbar.appendChild(
+    collectionSummary
+  );
+
+
+  /* -------------------------
+     SHOW FILTER
+     ------------------------- */
+
+  const statusGroup =
+    document.createElement(
+      "div"
+    );
+
+
+  statusGroup.className =
+    "collection-filter-group";
+
+
+  const statusLabel =
+    document.createElement(
+      "span"
+    );
+
+
+  statusLabel.className =
+    "collection-filter-label";
+
+
+  statusLabel.textContent =
+    "SHOW";
+
+
+  statusGroup.appendChild(
+    statusLabel
+  );
+
+
+  statusGroup.appendChild(
+    makeFilterButton(
+      "ALL",
+      "status",
+      "all"
+    )
+  );
+
+
+  statusGroup.appendChild(
+    makeFilterButton(
+      "DISCOVERED",
+      "status",
+      "owned"
+    )
+  );
+
+
+  statusGroup.appendChild(
+    makeFilterButton(
+      "MISSING",
+      "status",
+      "missing"
+    )
+  );
+
+
+  filterToolbar.appendChild(
+    statusGroup
+  );
+
+
+  /* -------------------------
+     RARITY FILTER
+     ------------------------- */
+
+  const rarityGroup =
+    document.createElement(
+      "div"
+    );
+
+
+  rarityGroup.className =
+    "collection-filter-group";
+
+
+  const rarityLabel =
+    document.createElement(
+      "span"
+    );
+
+
+  rarityLabel.className =
+    "collection-filter-label";
+
+
+  rarityLabel.textContent =
+    "RARITY";
+
+
+  rarityGroup.appendChild(
+    rarityLabel
+  );
+
+
+  rarityGroup.appendChild(
+    makeFilterButton(
+      "ALL",
+      "rarity",
+      "all"
+    )
+  );
+
+
+  for (
+    const rarity
+    of RARITY_ORDER
+  ) {
+
+    rarityGroup.appendChild(
+      makeFilterButton(
+        RARITY_NAMES[
+          rarity
+        ],
+        "rarity",
+        rarity
+      )
+    );
+  }
+
+
+  filterToolbar.appendChild(
+    rarityGroup
+  );
+
+
+  /* -------------------------
+     SHARE BUTTON
+     ------------------------- */
+
+  shareButton =
+    document.createElement(
+      "button"
+    );
+
+
+  shareButton.type =
+    "button";
+
+
+  shareButton.id =
+    "collection-share-link";
+
+
+  shareButton.textContent =
+    "COPY THIS COLLECTION LINK";
+
+
+  shareButton.addEventListener(
+    "click",
+    copyCollectionLink
+  );
+
+
+  filterToolbar.appendChild(
+    shareButton
+  );
+
+
+  /*
+     Place toolbar directly before
+     collection rarity sections.
+  */
+
+  sectionsElement.parentNode.insertBefore(
+    filterToolbar,
+    sectionsElement
+  );
+
+
+  updateFilterButtonStates();
+}
+
+
+function updateFilterButtonStates() {
+
+  if (
+    !filterToolbar
+  ) {
+
+    return;
+  }
+
+
+  const buttons =
+    filterToolbar.querySelectorAll(
+      ".collection-filter-button"
+    );
+
+
+  for (
+    const button
+    of buttons
+  ) {
+
+    const type =
+      button.dataset.filterType;
+
+
+    const value =
+      button.dataset.filterValue;
+
+
+    const active =
+      (
+        type ===
+        "status"
+        &&
+        value ===
+        currentStatusFilter
+      )
+
+      ||
+
+      (
+        type ===
+        "rarity"
+        &&
+        value ===
+        currentRarityFilter
+      );
+
+
+    button.classList.toggle(
+      "is-active",
+      active
+    );
+
+
+    button.setAttribute(
+      "aria-pressed",
+      active
+        ? "true"
+        : "false"
+    );
+  }
+}
+
+
+async function copyCollectionLink() {
+
+  const url =
+    window.location.href;
+
+
+  let copied =
+    false;
+
+
+  /*
+     Normal modern browser method.
+  */
+
+  if (
+    navigator.clipboard
+    &&
+    window.isSecureContext
+  ) {
+
+    try {
+
+      await navigator.clipboard.writeText(
+        url
+      );
+
+
+      copied =
+        true;
+    }
+
+    catch (error) {
+    }
+  }
+
+
+  /*
+     Fallback method.
+  */
+
+  if (!copied) {
+
+    const textarea =
+      document.createElement(
+        "textarea"
+      );
+
+
+    textarea.value =
+      url;
+
+
+    textarea.setAttribute(
+      "readonly",
+      ""
+    );
+
+
+    textarea.style.position =
+      "fixed";
+
+
+    textarea.style.opacity =
+      "0";
+
+
+    document.body.appendChild(
+      textarea
+    );
+
+
+    textarea.select();
+
+
+    try {
+
+      copied =
+        document.execCommand(
+          "copy"
+        );
+    }
+
+    catch (error) {
+
+      copied =
+        false;
+    }
+
+
+    textarea.remove();
+  }
+
+
+  if (
+    !shareButton
+  ) {
+
+    return;
+  }
+
+
+  shareButton.textContent =
+    copied
+      ? "LINK COPIED"
+      : "COPY FAILED";
+
+
+  shareButton.classList.toggle(
+    "is-copied",
+    copied
+  );
+
+
+  window.setTimeout(
+    function() {
+
+      shareButton.textContent =
+        "COPY THIS COLLECTION LINK";
+
+
+      shareButton.classList.remove(
+        "is-copied"
+      );
+
+    },
+    1600
+  );
+}
+
+
+/* =========================
    SUPABASE
-   ===================================================== */
-
+   ========================= */
 
 async function fetchCollection(
   username
@@ -736,26 +1591,25 @@ async function fetchCollection(
 
         headers: {
 
-          "apikey":
+          apikey:
             SUPABASE_PUBLISHABLE_KEY,
 
           "Content-Type":
             "application/json",
 
-          "Accept":
+          Accept:
             "application/json"
-
         },
 
 
         body:
           JSON.stringify(
             {
+
               p_username:
                 username
             }
           )
-
       }
     );
 
@@ -768,7 +1622,9 @@ async function fetchCollection(
     null;
 
 
-  if (responseText) {
+  if (
+    responseText
+  ) {
 
     try {
 
@@ -776,10 +1632,9 @@ async function fetchCollection(
         JSON.parse(
           responseText
         );
-
     }
 
-    catch {
+    catch (error) {
 
       data =
         responseText;
@@ -800,14 +1655,17 @@ async function fetchCollection(
 
 
     if (
-      data &&
+      data
+      &&
       typeof data ===
-        "object" &&
+      "object"
+      &&
       data.message
     ) {
 
       message +=
-        " " +
+        " "
+        +
         data.message;
     }
 
@@ -824,18 +1682,19 @@ async function fetchCollection(
     )
   ) {
 
-    return (
-      data.length > 0
-        ? data[0]
-        : null
-    );
+    return data.length > 0
+
+      ? data[0]
+
+      : null;
   }
 
 
   if (
-    data &&
+    data
+    &&
     typeof data ===
-      "object"
+    "object"
   ) {
 
     return data;
@@ -843,15 +1702,12 @@ async function fetchCollection(
 
 
   return null;
-
 }
 
 
-
-/* =====================================================
-   COLLECTION RENDERING
-   ===================================================== */
-
+/* =========================
+   COLLECTION CARDS
+   ========================= */
 
 function createCollectionItem(
   collectible,
@@ -882,6 +1738,20 @@ function createCollectionItem(
     collectible.rarity;
 
 
+  itemElement.dataset.owned =
+    owned
+      ? "true"
+      : "false";
+
+
+  itemElement.dataset.rarity =
+    collectible.rarity;
+
+
+  /* -------------------------
+     IMAGE
+     ------------------------- */
+
   const imageWrap =
     document.createElement(
       "div"
@@ -904,7 +1774,9 @@ function createCollectionItem(
 
   image.alt =
     owned
+
       ? collectible.name
+
       : "Undiscovered collectible";
 
 
@@ -922,9 +1794,12 @@ function createCollectionItem(
   );
 
 
+  /* -------------------------
+     DUPLICATE COUNT
+     ------------------------- */
+
   if (
-    ownedCount >
-    1
+    ownedCount > 1
   ) {
 
     const countElement =
@@ -949,6 +1824,10 @@ function createCollectionItem(
   }
 
 
+  /* -------------------------
+     MISSING MARK
+     ------------------------- */
+
   if (!owned) {
 
     const missingMark =
@@ -971,6 +1850,10 @@ function createCollectionItem(
   }
 
 
+  /* -------------------------
+     NAME
+     ------------------------- */
+
   const nameElement =
     document.createElement(
       "div"
@@ -983,7 +1866,9 @@ function createCollectionItem(
 
   nameElement.textContent =
     owned
+
       ? collectible.name
+
       : "UNDISCOVERED";
 
 
@@ -993,7 +1878,49 @@ function createCollectionItem(
 
 
   return itemElement;
+}
 
+
+function collectibleMatchesStatus(
+  collection,
+  collectible
+) {
+
+  if (
+    currentStatusFilter ===
+    "all"
+  ) {
+
+    return true;
+  }
+
+
+  const owned =
+    getOwnedCount(
+      collection,
+      collectible.id
+    ) > 0;
+
+
+  if (
+    currentStatusFilter ===
+    "owned"
+  ) {
+
+    return owned;
+  }
+
+
+  if (
+    currentStatusFilter ===
+    "missing"
+  ) {
+
+    return !owned;
+  }
+
+
+  return true;
 }
 
 
@@ -1002,7 +1929,7 @@ function createRaritySection(
   collection
 ) {
 
-  const collectibles =
+  const allRarityCollectibles =
     COLLECTIBLES.filter(
       item =>
         item.rarity ===
@@ -1010,25 +1937,50 @@ function createRaritySection(
     );
 
 
-  let ownedUnique =
-    0;
+  const visibleCollectibles =
+    allRarityCollectibles.filter(
+      collectible =>
+        collectibleMatchesStatus(
+          collection,
+          collectible
+        )
+    );
 
 
-  for (
-    const collectible
-    of collectibles
+  if (
+    visibleCollectibles.length ===
+    0
   ) {
 
-    if (
-      getOwnedCount(
-        collection,
-        collectible.id
-      ) > 0
-    ) {
-
-      ownedUnique++;
-    }
+    return null;
   }
+
+
+  const ownedUnique =
+    allRarityCollectibles.reduce(
+      (
+        count,
+        collectible
+      ) => {
+
+        return (
+          count
+          +
+          (
+            getOwnedCount(
+              collection,
+              collectible.id
+            ) > 0
+
+              ? 1
+
+              : 0
+          )
+        );
+      },
+
+      0
+    );
 
 
   const section =
@@ -1044,6 +1996,10 @@ function createRaritySection(
   section.dataset.rarity =
     rarity;
 
+
+  /* -------------------------
+     HEADER
+     ------------------------- */
 
   const sectionHeader =
     document.createElement(
@@ -1086,7 +2042,7 @@ function createRaritySection(
     +
     " / "
     +
-    collectibles.length
+    allRarityCollectibles.length
     +
     " DISCOVERED";
 
@@ -1101,6 +2057,10 @@ function createRaritySection(
   );
 
 
+  /* -------------------------
+     GRID
+     ------------------------- */
+
   const grid =
     document.createElement(
       "div"
@@ -1113,22 +2073,17 @@ function createRaritySection(
 
   for (
     const collectible
-    of collectibles
+    of visibleCollectibles
   ) {
 
     grid.appendChild(
-
       createCollectionItem(
-
         collectible,
-
         getOwnedCount(
           collection,
           collectible.id
         )
-
       )
-
     );
   }
 
@@ -1144,13 +2099,199 @@ function createRaritySection(
 
 
   return section;
-
 }
 
+
+/* =========================
+   SUMMARY
+   ========================= */
+
+function updateCollectionSummary(
+  collection
+) {
+
+  ensureFilterToolbar();
+
+
+  const uniqueCount =
+    getSafeUniqueCount(
+      collection
+    );
+
+
+  const missingCount =
+    TOTAL_ITEMS
+    -
+    uniqueCount;
+
+
+  const duplicates =
+    getDuplicatePulls(
+      collection
+    );
+
+
+  const totalPulls =
+    getSafeTotalPulls(
+      collection
+    );
+
+
+  collectionSummary.innerHTML = `
+
+    <span class="cache-summary-chip">
+      <strong>${uniqueCount}</strong> FOUND
+    </span>
+
+    <span class="cache-summary-chip">
+      <strong>${missingCount}</strong> MISSING
+    </span>
+
+    <span class="cache-summary-chip">
+      <strong>${duplicates}</strong> DUPLICATES
+    </span>
+
+    <span class="cache-summary-chip">
+      <strong>${totalPulls}</strong> TOTAL PULLS
+    </span>
+
+  `;
+}
+
+
+/* =========================
+   FILTERED SECTIONS
+   ========================= */
+
+function renderFilteredSections() {
+
+  if (
+    !currentCollection
+  ) {
+
+    return;
+  }
+
+
+  sectionsElement.innerHTML =
+    "";
+
+
+  let renderedSections =
+    0;
+
+
+  const rarities =
+    currentRarityFilter ===
+      "all"
+
+      ? RARITY_ORDER
+
+      : [
+          currentRarityFilter
+        ];
+
+
+  for (
+    const rarity
+    of rarities
+  ) {
+
+    const section =
+      createRaritySection(
+        rarity,
+        currentCollection
+      );
+
+
+    if (
+      section
+    ) {
+
+      sectionsElement.appendChild(
+        section
+      );
+
+
+      renderedSections++;
+    }
+  }
+
+
+  if (
+    renderedSections ===
+    0
+  ) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+
+    empty.className =
+      "collection-filter-empty";
+
+
+    if (
+      currentStatusFilter ===
+      "owned"
+    ) {
+
+      empty.textContent =
+        "NO DISCOVERED RELICS MATCH THIS FILTER";
+    }
+
+
+    else if (
+      currentStatusFilter ===
+      "missing"
+    ) {
+
+      empty.textContent =
+        "NO MISSING RELICS MATCH THIS FILTER";
+    }
+
+
+    else {
+
+      empty.textContent =
+        "NO RELICS MATCH THIS FILTER";
+    }
+
+
+    sectionsElement.appendChild(
+      empty
+    );
+  }
+}
+
+
+/* =========================
+   FULL COLLECTION RENDER
+   ========================= */
 
 function renderCollection(
   collection
 ) {
+
+  currentCollection =
+    collection;
+
+
+  currentStatusFilter =
+    "all";
+
+
+  currentRarityFilter =
+    "all";
+
+
+  ensureFilterToolbar();
+
+
+  updateFilterButtonStates();
+
 
   const username =
     normalizeUsername(
@@ -1160,48 +2301,39 @@ function renderCollection(
 
   const displayName =
     String(
-      collection.display_name ||
-      collection.username ||
+      collection.display_name
+      ||
+      collection.username
+      ||
       username
     );
 
 
   const totalPulls =
-    Number(
-      collection.total_pulls ||
-      0
+    getSafeTotalPulls(
+      collection
     );
 
 
-  let uniqueCount =
-    Number(
-      collection.unique_count ||
-      0
+  const uniqueCount =
+    getSafeUniqueCount(
+      collection
     );
 
 
-  if (
-    !Number.isFinite(
-      uniqueCount
-    )
-  ) {
+  const completed =
+    collection.completed ===
+      true
 
-    uniqueCount =
-      0;
-  }
+    ||
+
+    uniqueCount >=
+      TOTAL_ITEMS;
 
 
-  uniqueCount =
-    Math.max(
-      0,
-      Math.min(
-        TOTAL_ITEMS,
-        Math.floor(
-          uniqueCount
-        )
-      )
-    );
-
+  /* -------------------------
+     VIEWER NAME
+     ------------------------- */
 
   viewerElement.textContent =
     "@"
@@ -1209,18 +2341,17 @@ function renderCollection(
     displayName;
 
 
-  totalPullsElement.textContent =
-    Number.isFinite(
-      totalPulls
-    )
-      ? Math.max(
-          0,
-          Math.floor(
-            totalPulls
-          )
-        )
-      : 0;
+  /* -------------------------
+     TOTAL PULLS
+     ------------------------- */
 
+  totalPullsElement.textContent =
+    totalPulls;
+
+
+  /* -------------------------
+     PROGRESS
+     ------------------------- */
 
   progressCountElement.textContent =
     uniqueCount
@@ -1230,72 +2361,48 @@ function renderCollection(
     TOTAL_ITEMS;
 
 
-  const progressPercent =
-    (
-      uniqueCount /
-      TOTAL_ITEMS
-    )
-    *
-    100;
-
-
   progressFillElement.style.width =
-    progressPercent
+    (
+      (
+        uniqueCount
+        /
+        TOTAL_ITEMS
+      )
+      *
+      100
+    )
     +
     "%";
 
 
-  const completed =
-    collection.completed ===
-      true
-    ||
-    uniqueCount >=
-      TOTAL_ITEMS;
-
-
-  if (completed) {
-
-    progressMessageElement.textContent =
-      "THE FLOCK IS COMPLETE";
-
-
-    progressMessageElement.classList.add(
-      "complete"
+  progressMessageElement.textContent =
+    getProgressMessage(
+      uniqueCount,
+      completed
     );
 
-  }
 
-  else {
-
-    progressMessageElement.textContent =
-      "THE FLOCK IS STILL GATHERING";
-
-
-    progressMessageElement.classList.remove(
-      "complete"
-    );
-  }
+  progressMessageElement.classList.toggle(
+    "complete",
+    completed
+  );
 
 
-  sectionsElement.innerHTML =
-    "";
+  /* -------------------------
+     SUMMARY + ITEMS
+     ------------------------- */
+
+  updateCollectionSummary(
+    collection
+  );
 
 
-  for (
-    const rarity
-    of RARITY_ORDER
-  ) {
+  renderFilteredSections();
 
-    sectionsElement.appendChild(
 
-      createRaritySection(
-        rarity,
-        collection
-      )
-
-    );
-  }
-
+  /* -------------------------
+     FOOTER
+     ------------------------- */
 
   lastUpdatedElement.textContent =
     formatUpdatedAt(
@@ -1303,21 +2410,36 @@ function renderCollection(
     );
 
 
+  /* -------------------------
+     SEARCH FIELD
+     ------------------------- */
+
   searchInput.value =
     username;
 
 
+  /* -------------------------
+     PAGE TITLE
+     ------------------------- */
+
+  document.title =
+    displayName
+    +
+    " · Shepherd's Cache";
+
+
+  /* -------------------------
+     SHOW COLLECTION
+     ------------------------- */
+
   collectionBook.hidden =
     false;
-
 }
 
 
-
-/* =====================================================
+/* =========================
    LOAD VIEWER
-   ===================================================== */
-
+   ========================= */
 
 async function loadViewer(
   username
@@ -1329,10 +2451,20 @@ async function loadViewer(
     );
 
 
-  if (!cleanUsername) {
+  if (
+    !cleanUsername
+  ) {
+
+    currentCollection =
+      null;
+
 
     collectionBook.hidden =
       true;
+
+
+    document.title =
+      "Shepherd's Cache";
 
 
     setStatus(
@@ -1352,6 +2484,10 @@ async function loadViewer(
   setPageUsername(
     cleanUsername
   );
+
+
+  currentCollection =
+    null;
 
 
   collectionBook.hidden =
@@ -1376,7 +2512,13 @@ async function loadViewer(
       );
 
 
-    if (!collection) {
+    if (
+      !collection
+    ) {
+
+      document.title =
+        "Shepherd's Cache";
+
 
       setStatus(
         "No Shepherd's Cache was found for @"
@@ -1401,8 +2543,8 @@ async function loadViewer(
       "",
       ""
     );
-
   }
+
 
   catch (
     error
@@ -1414,12 +2556,18 @@ async function loadViewer(
     );
 
 
+    currentCollection =
+      null;
+
+
     collectionBook.hidden =
       true;
 
 
     setStatus(
-      error &&
+
+      error
+      &&
       error.message
 
         ? error.message
@@ -1429,15 +2577,12 @@ async function loadViewer(
       "error"
     );
   }
-
 }
 
 
-
-/* =====================================================
+/* =========================
    SEARCH
-   ===================================================== */
-
+   ========================= */
 
 searchForm.addEventListener(
   "submit",
@@ -1451,28 +2596,30 @@ searchForm.addEventListener(
     loadViewer(
       searchInput.value
     );
-
   }
 );
 
 
-
-/* =====================================================
+/* =========================
    START
-   ===================================================== */
+   ========================= */
+
+ensureFilterToolbar();
 
 
 const initialUsername =
   getUsernameFromPage();
 
 
-if (initialUsername) {
+if (
+  initialUsername
+) {
 
   loadViewer(
     initialUsername
   );
-
 }
+
 
 else {
 
@@ -1480,5 +2627,4 @@ else {
     "Enter a Twitch username to open a Shepherd's Cache.",
     "idle"
   );
-
 }
