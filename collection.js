@@ -449,9 +449,7 @@ function injectEnhancementStyles() {
       gap: 8px;
     }
 
-    #collection-rarity-stats {
-      margin-top: 8px;
-    }
+    #collection-rarity-stats { margin-top: 8px; }
 
     .cache-stat-card {
       min-width: 0;
@@ -570,9 +568,7 @@ function injectEnhancementStyles() {
       box-shadow: 0 0 28px rgba(184,140,255,.12);
     }
 
-    #collection-book.is-complete #cache-completion-banner {
-      display: block;
-    }
+    #collection-book.is-complete #cache-completion-banner { display: block; }
 
     #cache-completion-seal {
       width: 50px;
@@ -1178,7 +1174,6 @@ async function initialize() {
     }
   } catch (error) {
     console.error(error);
-
     setStatus(
       error && error.message
         ? error.message
@@ -1195,15 +1190,8 @@ searchForm.addEventListener("submit", async (event) => {
     await loadViewer(searchInput.value, seriesSelect.value);
   } catch (error) {
     console.error(error);
-
     collectionBook.hidden = true;
-
-    setStatus(
-      error && error.message
-        ? error.message
-        : "The Shepherd's Cache could not be opened.",
-      "error"
-    );
+    setStatus(error && error.message ? error.message : "The Shepherd's Cache could not be opened.", "error");
   }
 });
 
@@ -1216,7 +1204,6 @@ seriesSelect.addEventListener("change", async () => {
 
     if (selectedSeries) {
       currentSeries = selectedSeries;
-
       seriesCaption.textContent =
         String(selectedSeries.series_subtitle || "") +
         " · " +
@@ -1233,15 +1220,8 @@ seriesSelect.addEventListener("change", async () => {
     await loadViewer(username, seriesId);
   } catch (error) {
     console.error(error);
-
     collectionBook.hidden = true;
-
-    setStatus(
-      error && error.message
-        ? error.message
-        : "The Shepherd's Cache could not be opened.",
-      "error"
-    );
+    setStatus(error && error.message ? error.message : "The Shepherd's Cache could not be opened.", "error");
   }
 });
 
